@@ -24,7 +24,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>cat.udl.eps.softarch.hello.config.WebAppContext</param-value>
+            <param-value>cat.udl.eps.softarch.hello.config.GreetingsAppContext</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

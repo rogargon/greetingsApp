@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 @EnableWebMvc
 @ComponentScan("cat.udl.eps.softarch.hello")
 @EnableJpaRepositories("cat.udl.eps.softarch.hello.repository")
-public class WebAppContext extends WebMvcConfigurerAdapter{
+public class GreetingsAppContext extends WebMvcConfigurerAdapter{
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -45,7 +45,7 @@ public class WebAppContext extends WebMvcConfigurerAdapter{
     public ViewResolver getViewResolver(){
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/view/");
+        viewResolver.setPrefix("/WEB-INF/views/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
     }
