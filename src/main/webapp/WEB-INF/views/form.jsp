@@ -24,7 +24,7 @@
     <table>
         <tr>
             <td><form:label path="content">Content</form:label></td>
-            <td><form:input path="content"/></td>
+            <td><form:input path="content"/> <i><form:errors path="content"></form:errors></i></td>
         </tr>
         <tr>
             <td><input type="submit" value="Submit" /></td>
