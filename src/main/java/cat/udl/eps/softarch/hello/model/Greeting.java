@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Size;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -18,6 +19,7 @@ public class Greeting {
     private long id;
 
     @NotBlank
+    @Size(min = 1, max = 256)
     private String content;
 
     public Greeting() {}
