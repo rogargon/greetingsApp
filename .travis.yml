@@ -1,0 +1,5 @@
+language: java
+notifications:
+  email: rogargon@gmail.com
+  on_success: change
+  on_failure: always
