@@ -9,11 +9,11 @@
 <c:if test="${not empty greeting}">
     <h2>Greeting number ${greeting.getId()}</h2>
     <p>Message: ${fn:escapeXml(greeting.getContent())} (<a href="/greetings/${greeting.getId()}/form">edit</a>)</p>
-</c:if>
 
-<form:form method="DELETE" action="/greetings/${greeting.getId()}">
-    <p><input type="submit" value="Delete"/></p>
-</form:form>
+    <form:form method="DELETE" action="/greetings/${greeting.getId()}">
+        <p><input type="submit" value="Delete"/></p>
+    </form:form>
+</c:if>
 
 </body>
 </html>
