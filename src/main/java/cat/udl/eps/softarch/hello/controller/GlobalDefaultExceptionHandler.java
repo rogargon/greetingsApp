@@ -6,31 +6,32 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
 /**
- * Created by roberto on 13/09/14.
+ * Created by http://rhizomik.net/~roberto/
  */
 
 @ControllerAdvice
 class GlobalDefaultExceptionHandler {
-    final Logger logger = LoggerFactory.getLogger(GreetingController.class);
+    final Logger logger = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
     public static final String DEFAULT_ERROR_VIEW = "error";
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     ModelAndView handleBadRequest(HttpServletRequest request, Exception e) {
         logger.info("Generating HTTP BAD REQUEST from ConstraintViolationException: {}", e);
-        return new ModelAndView(DEFAULT_ERROR_VIEW, "error", new ErrorInfo(request.getRequestURI(), e));
+        return contentNegotiatedErrorView(request, e);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NullPointerException.class)
     ModelAndView handleNotFound(HttpServletRequest request, Exception e) {
         logger.info("Generating HTTP NOT FOUND from NullPointerException: {}", e);
-        return new ModelAndView(DEFAULT_ERROR_VIEW, "error", new ErrorInfo(request.getRequestURI(), e));
+        return contentNegotiatedErrorView(request, e);
     }
 
     @ExceptionHandler(Exception.class)
@@ -38,7 +39,18 @@ class GlobalDefaultExceptionHandler {
         logger.info("Handling generic Exception: {}", e);
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
             throw e;
-        return new ModelAndView(DEFAULT_ERROR_VIEW, "error", new ErrorInfo(request.getRequestURI(), e));
+        return contentNegotiatedErrorView(request, e);
+    }
+
+    private ModelAndView contentNegotiatedErrorView(HttpServletRequest request, Exception e) {
+        ErrorInfo errorInfo = new ErrorInfo(request.getRequestURI(), e);
+
+        String acceptHeader = request.getHeader("Accept");
+        if(acceptHeader.contains("application/json")) {
+            MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
+            return new ModelAndView(jsonView).addObject(errorInfo);
+        }
+        return new ModelAndView(DEFAULT_ERROR_VIEW, "error", errorInfo);
     }
 
     public class ErrorInfo {
