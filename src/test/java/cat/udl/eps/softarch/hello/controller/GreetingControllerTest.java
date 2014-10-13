@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import cat.udl.eps.softarch.hello.config.GreetingsAppContext;
+import cat.udl.eps.softarch.hello.config.GreetingsAppTestContext;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
 import com.google.common.primitives.Ints;
@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -23,8 +25,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = GreetingsAppContext.class)
+@ContextConfiguration(classes = GreetingsAppTestContext.class)
 @WebAppConfiguration
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class GreetingControllerTest {
 
     @Autowired
@@ -52,7 +55,7 @@ public class GreetingControllerTest {
     public void testList() throws Exception {
         int startSize = Ints.checkedCast(greetingRepository.count());
 
-        mockMvc.perform(get("/greetings"))
+        mockMvc.perform(get("/greetings").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(view().name("greetings"))
                 .andExpect(forwardedUrl("/WEB-INF/views/greetings.jsp"))
@@ -65,7 +68,7 @@ public class GreetingControllerTest {
 
     @Test
     public void testRetrieveExisting() throws Exception {
-        mockMvc.perform(get("/greetings/{id}", 1L))
+        mockMvc.perform(get("/greetings/{id}", 1L).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(view().name("greeting"))
                 .andExpect(forwardedUrl("/WEB-INF/views/greeting.jsp"))
@@ -77,7 +80,7 @@ public class GreetingControllerTest {
 
     @Test
     public void testRetrieveNonExisting() throws Exception {
-        mockMvc.perform(get("/greetings/{id}", 999L))
+        mockMvc.perform(get("/greetings/{id}", 999L).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("error"))
                 .andExpect(forwardedUrl("/WEB-INF/views/error.jsp"));
@@ -91,6 +94,7 @@ public class GreetingControllerTest {
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(post("/greetings")
+                        .accept(MediaType.TEXT_HTML)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("content", "newtest"))
                 .andExpect(status().isFound())
@@ -106,6 +110,7 @@ public class GreetingControllerTest {
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(post("/greetings")
+                        .accept(MediaType.TEXT_HTML)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("content", ""))
                 .andExpect(status().isOk())
@@ -166,6 +171,7 @@ public class GreetingControllerTest {
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", 999L)
+                        .accept(MediaType.TEXT_HTML)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("content", "updated"))
                 .andExpect(status().isNotFound())
@@ -186,7 +192,7 @@ public class GreetingControllerTest {
 
     @Test
     public void testUpdateFormNonExisting() throws Exception {
-        mockMvc.perform(get("/greetings/{id}/form", 999L))
+        mockMvc.perform(get("/greetings/{id}/form", 999L).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("error"))
                 .andExpect(forwardedUrl("/WEB-INF/views/error.jsp"));
@@ -197,7 +203,7 @@ public class GreetingControllerTest {
         Greeting toBeRemoved = greetingRepository.save(new Greeting("toberemoved"));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
-        mockMvc.perform(delete("/greetings/{id}", toBeRemoved.getId()))
+        mockMvc.perform(delete("/greetings/{id}", toBeRemoved.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/greetings"));
 
@@ -209,7 +215,7 @@ public class GreetingControllerTest {
     public void testDeleteNonExisting() throws Exception {
         int startSize = Ints.checkedCast(greetingRepository.count());
 
-        mockMvc.perform(delete("/greetings/{id}", 999L))
+        mockMvc.perform(delete("/greetings/{id}", 999L).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("error"))
                 .andExpect(forwardedUrl("/WEB-INF/views/error.jsp"));
