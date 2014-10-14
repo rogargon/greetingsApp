@@ -1,9 +1,8 @@
 package cat.udl.eps.softarch.hello.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,6 +26,7 @@ import javax.sql.DataSource;
 @EnableWebMvc
 @ComponentScan("cat.udl.eps.softarch.hello")
 @EnableJpaRepositories("cat.udl.eps.softarch.hello.repository")
+@Import(RepositoryRestMvcConfiguration.class)
 @EnableTransactionManagement
 public class GreetingsAppTestContext extends WebMvcConfigurerAdapter{
 
