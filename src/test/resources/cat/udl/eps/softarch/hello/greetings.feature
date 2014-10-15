@@ -1,5 +1,5 @@
-Feature: GreetingsJSONAPI
-  JSON API version of the Greetings application
+Feature: GreetingsAPI
+  API version of the Greetings application
 
   Scenario: list greetings
     Given the greetings repository has the following greetings:
@@ -16,3 +16,76 @@ Feature: GreetingsJSONAPI
       | Bye          |
     When the client requests greeting with id 2
     Then the response is a greeting with id 2 and content "Bye"
+
+  Scenario: retrieve a non-existing greeting
+    Given greeting with id 999 doesn't exist
+    When the client requests greeting with id 999
+    Then the response is status code 404
+    And error message contains "Greeting with id 999 not found"
+    And error url is "/greetings/999"
+
+  Scenario: create new greeting
+    When the client creates a greeting with content "Bye bye!"
+    Then the response is status code 201
+    And header "Location" points to a greeting with content "Bye bye!"
+
+  Scenario: create new greeting with empty content
+    When the client creates a greeting with content ""
+    Then the response is status code 400
+    And error message contains "Content cannot be blank"
+    And error url is "/greetings"
+
+  Scenario: create new greeting with content longer than 256 characters
+    When the client creates a greeting with content "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tincidunt, dui sed efficitur pellentesque, lorem velit varius ligula, id malesuada felis purus vitae tellus. Donec at vestibulum purus, eget hendrerit nisl. Duis aliquam leo ac magna mollis malesuada."
+    Then the response is status code 400
+    And error message contains "Content maximum length is 256 characters long"
+    And error url is "/greetings"
+
+  Scenario: update existing greeting
+    Given the greetings repository has the following greetings:
+      | Hello World! |
+      | Bye          |
+    When the client updates greeting with id 1 with content "Just hello!"
+    Then the response is status code 200
+    And the response is a greeting with id 1 and content "Just hello!"
+
+  Scenario: update non-existing greeting
+    Given the greetings repository has the following greetings:
+      | Hello World! |
+      | Bye          |
+    When the client updates greeting with id 999 with content "Hello Again!"
+    Then the response is status code 404
+    And error message contains "Greeting with id 999 not found"
+    And error url is "/greetings/999"
+
+  Scenario: update existing greeting with empty content
+    Given the greetings repository has the following greetings:
+      | Hello World! |
+      | Bye          |
+    When the client updates greeting with id 1 with content ""
+    Then the response is status code 400
+    And error message contains "Content cannot be blank"
+    And error url is "/greetings/1"
+
+  Scenario: update existing greeting with content longer than 256 characters
+    When the client updates greeting with id 1 with content "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tincidunt, dui sed efficitur pellentesque, lorem velit varius ligula, id malesuada felis purus vitae tellus. Donec at vestibulum purus, eget hendrerit nisl. Duis aliquam leo ac magna mollis malesuada."
+    Then the response is status code 400
+    And error message contains "Content maximum length is 256 characters long"
+    And error url is "/greetings/1"
+
+  Scenario: delete existing greeting
+    Given the greetings repository has the following greetings:
+      | Hello World! |
+      | Bye          |
+    When the client deletes greeting with id 1
+    Then the response is status code 200
+    And the response is empty
+
+  Scenario: delete non-existing greeting
+    Given the greetings repository has the following greetings:
+      | Hello World! |
+      | Bye          |
+    When the client deletes greeting with id 999
+    Then the response is status code 404
+    And error message contains "Greeting with id 999 not found"
+    And error url is "/greetings/999"
