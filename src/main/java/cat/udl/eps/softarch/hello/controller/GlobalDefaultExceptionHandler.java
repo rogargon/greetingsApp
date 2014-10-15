@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -22,8 +23,15 @@ class GlobalDefaultExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    ModelAndView handleBadRequest(HttpServletRequest request, Exception e) {
+    ModelAndView handleConstraintViolationException(HttpServletRequest request, Exception e) {
         logger.info("Generating HTTP BAD REQUEST from ConstraintViolationException: {}", e);
+        return contentNegotiatedErrorView(request, e);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ModelAndView handleMethodArgumentNotValidException(HttpServletRequest request, Exception e) {
+        logger.info("Generating HTTP BAD REQUEST from MethodArgumentNotValidException: {}", e);
         return contentNegotiatedErrorView(request, e);
     }
 
@@ -34,6 +42,7 @@ class GlobalDefaultExceptionHandler {
         return contentNegotiatedErrorView(request, e);
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
         logger.info("Handling generic Exception: {}", e);
@@ -46,7 +55,7 @@ class GlobalDefaultExceptionHandler {
         ErrorInfo errorInfo = new ErrorInfo(request.getRequestURI(), e);
 
         String acceptHeader = request.getHeader("Accept");
-        if(acceptHeader.contains("application/json")) {
+        if(acceptHeader==null || acceptHeader.contains("application/json")) {
             MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
             return new ModelAndView(jsonView).addObject(errorInfo);
         }
@@ -59,7 +68,7 @@ class GlobalDefaultExceptionHandler {
 
         public ErrorInfo(String url, Exception e) {
             this.url = url;
-            this.message = e.getLocalizedMessage();
+            this.message = e.getMessage();
         }
 
         public String getUrl() { return url; }

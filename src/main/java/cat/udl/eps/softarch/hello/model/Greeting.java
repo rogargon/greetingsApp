@@ -18,8 +18,8 @@ public class Greeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
-    @Size(min = 1, max = 256)
+    @NotBlank(message = "Content cannot be blank")
+    @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String content;
 
     public Greeting() {}
