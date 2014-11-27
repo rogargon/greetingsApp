@@ -14,6 +14,16 @@
         <servlet-name>DispatcherServlet</servlet-name>
     </filter-mapping>
 
+    <!-- Filter includes headers for Cross-Origin Resource Sharing (CORS) in the response -->
+    <filter>
+        <filter-name>simpleCORSFilter</filter-name>
+        <filter-class>cat.udl.eps.softarch.hello.filter.SimpleCORSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>simpleCORSFilter</filter-name>
+        <servlet-name>DispatcherServlet</servlet-name>
+    </filter-mapping>
+
     <!-- API Front Controller -->
     <servlet>
         <servlet-name>DispatcherServlet</servlet-name>
