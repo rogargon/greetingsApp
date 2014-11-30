@@ -1,11 +1,14 @@
 package cat.udl.eps.softarch.hello.model;
 
+import java.util.Date;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -22,6 +25,13 @@ public class Greeting {
     @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String content;
 
+    @NotNull(message = "E-mail cannot be empty")
+    @Email(message = "E-mail should be valid")
+    private String email;
+
+    @NotNull
+    private Date date;
+
     public Greeting() {}
 
     public Greeting(String content) {
@@ -37,4 +47,12 @@ public class Greeting {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public Date getDate() { return date; }
+
+    public void setDate(Date date) { this.date = date; }
 }

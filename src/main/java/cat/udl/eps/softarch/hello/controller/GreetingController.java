@@ -1,5 +1,6 @@
 package cat.udl.eps.softarch.hello.controller;
 
+import java.util.Date;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
 import com.google.common.base.Preconditions;
@@ -75,7 +76,9 @@ public class GreetingController {
     @RequestMapping(value = "/form", method = RequestMethod.GET, produces = "text/html")
     public ModelAndView createForm() {
         logger.info("Generating form for greeting creation");
-        return new ModelAndView("form", "greeting", new Greeting());
+        Greeting emptyGreeting = new Greeting();
+        emptyGreeting.setDate(new Date());
+        return new ModelAndView("form", "greeting", emptyGreeting);
     }
 
 // UPDATE
@@ -87,6 +90,8 @@ public class GreetingController {
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
         Greeting updateGreeting = greetingRepository.findOne(id);
         updateGreeting.setContent(greeting.getContent());
+        updateGreeting.setEmail(greeting.getEmail());
+        updateGreeting.setDate(greeting.getDate());
         return greetingRepository.save(updateGreeting);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/x-www-form-urlencoded")

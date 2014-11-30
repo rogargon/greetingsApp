@@ -27,6 +27,13 @@
             <td><form:input path="content"/> <i><form:errors path="content"></form:errors></i></td>
         </tr>
         <tr>
+            <td><form:label path="email">E-Mail</form:label></td>
+            <td><form:input path="email"/> <i><form:errors path="email"></form:errors></i></td>
+        </tr>
+        <tr>
+            <td><form:hidden path="date"/> <i><form:errors path="date"></form:errors></i></td>
+        </tr>
+        <tr>
             <td><input type="submit" value="Submit" /></td>
         </tr>
     </table>
