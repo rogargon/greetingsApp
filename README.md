@@ -1,7 +1,7 @@
-GreetigsApp
-===========
+GreetingsApp
+============
 
-[![Build Status](https://travis-ci.org/rogargon/springmvc-html.svg?branch=master)](https://travis-ci.org/rogargon/springmvc-html)
+[![Build Status](https://travis-ci.org/rogargon/greetingsApp.svg?branch=master)](https://travis-ci.org/rogargon/greetingsApp)
 
 This is a simple Spring demo of a Greetings application providing a RESTFul JSON API also available from an HTML user interface. 
 
@@ -12,4 +12,5 @@ Features:
 * Unit Testing
 * Spring Cucumber acceptance tests
 * Simple CORS Filter
+* Travis Continuous Integration
 * ...
