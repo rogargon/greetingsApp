@@ -3,6 +3,8 @@ package cat.udl.eps.softarch.hello;
 import cat.udl.eps.softarch.hello.config.GreetingsAppTestContext;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
+import cucumber.api.DataTable;
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.*;
@@ -15,6 +17,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -30,13 +35,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = GreetingsAppTestContext.class)
 public class GreetingsStepdefs {
 
+    static DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
     @Autowired
     GreetingRepository greetingRepository;
 
     @Autowired
     private WebApplicationContext wac;
 
-    private MockMvc mockMvc;
+    private MockMvc       mockMvc;
     private ResultActions result;
 
     @Before
@@ -45,17 +52,18 @@ public class GreetingsStepdefs {
     }
 
     @After
-    public void tearDown() throws Exception {}
+    public void tearDown() throws Exception {
+    }
 
     @Given("^the greetings repository has the following greetings:$")
-    public void the_greetings_repository_has_the_following_greetings(List<String> greetingContents) throws Throwable {
+    public void the_greetings_repository_has_the_following_greetings(DataTable greetings) throws Throwable {
         Long index = 1L;
-        for (String c : greetingContents) {
+        for (Greeting g : greetings.asList(Greeting.class)) {
             if (!greetingRepository.exists(index))
-                greetingRepository.save(new Greeting(c));
-            else if (!greetingRepository.findOne(index).getContent().equals(c)) {
+                greetingRepository.save(g);
+            else if (!greetingRepository.findOne(index).getContent().equals(g.getContent())) {
                 Greeting toBeUpdated = greetingRepository.findOne(index);
-                toBeUpdated.setContent(c);
+                toBeUpdated.setContent(g.getContent());
                 greetingRepository.save(toBeUpdated);
             }
             index++;
@@ -65,7 +73,7 @@ public class GreetingsStepdefs {
     @When("^the client request the list of greetings$")
     public void the_client_request_the_list_of_greetings() throws Throwable {
         result = mockMvc.perform(get("/greetings")
-                            .accept(MediaType.APPLICATION_JSON));
+                .accept(MediaType.APPLICATION_JSON));
     }
 
     @Then("^the response is a list containing (\\d+) greetings$")
@@ -114,11 +122,13 @@ public class GreetingsStepdefs {
         result.andExpect(jsonPath("$.errorInfo.url", is(errorURL)));
     }
 
-    @When("^the client creates a greeting with content \"([^\"]*)\"$")
-    public void the_client_creates_a_greeting_with_content(String content) throws Throwable {
+    @When("^the client creates a greeting with content \"([^\"]*)\", email \"([^\"]*)\" and date \"([^\"]*)\"$")
+    public void the_client_creates_a_greeting_with_content_email_and_date(String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(post("/greetings")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{ \"content\" : \"" + content + "\" }")
+                            .content("{ \"content\": \"" + content + "\""+
+                                     ", \"email\": \"" + email + "\""+
+                                     ", \"date\": \"" + df.format(date) + "\" }")
                             .accept(MediaType.APPLICATION_JSON));
     }
 
@@ -132,12 +142,14 @@ public class GreetingsStepdefs {
                 .andExpect(jsonPath("$.content", is(content)));
     }
 
-    @When("^the client updates greeting with id (\\d+) with content \"([^\"]*)\"$")
-    public void the_client_updates_greeting_with_id_with_content(int id, String content) throws Throwable {
+    @When("^the client updates greeting with id (\\d+) with content \"([^\"]*)\", email \"([^\"]*)\" and date \"([^\"]*)\"$")
+    public void the_client_updates_greeting_with_id_with_content_email_and_date(int id, String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(put("/greetings/{id}", id)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("{ \"content\" : \"" + content + "\" }")
-                            .accept(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"content\": \"" + content + "\""+
+                         ", \"email\": \"" + email + "\""+
+                         ", \"date\": \"" + df.format(date) + "\" }")
+                .accept(MediaType.APPLICATION_JSON));
     }
 
     @When("^the client deletes greeting with id (\\d+)$")

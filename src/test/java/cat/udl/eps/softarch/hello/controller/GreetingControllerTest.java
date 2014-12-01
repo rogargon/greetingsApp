@@ -1,5 +1,7 @@
 package cat.udl.eps.softarch.hello.controller;
 
+import java.util.Date;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,14 +44,15 @@ public class GreetingControllerTest {
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         if (greetingRepository.count()==0) {
-            Greeting g = new Greeting();
-            g.setContent("test1");
+            Greeting g = new Greeting("test1", "test@example.org", new Date());
             greetingRepository.save(g);
         }
     }
 
     @After
     public void tearDown() throws Exception {}
+
+    //TODO: Add tests for email and date greeting fields on retrieve/create/update, validation errors...
 
     @Test
     public void testList() throws Exception {
@@ -88,15 +91,16 @@ public class GreetingControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        Greeting last = new Greeting();
-        last.setContent("last");
+        Greeting last = new Greeting("last", "test@example.org", new Date());
         int nextGreetingId = Ints.checkedCast(greetingRepository.save(last).getId())+1;
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(post("/greetings")
                         .accept(MediaType.TEXT_HTML)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("content", "newtest"))
+                        .param("content", "newtest")
+                        .param("email", "newtest@example.org")
+                        .param("date", new Date().toString()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/greetings/"+nextGreetingId))
                 .andExpect(model().hasNoErrors())
@@ -134,12 +138,14 @@ public class GreetingControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated"));
+        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "a@b.net", new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("content", "updated"))
+                        .param("content", "updated")
+                        .param("email", "newtest@example.org")
+                        .param("date", new Date().toString()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/greetings/"+tobeupdated.getId()))
                 .andExpect(model().hasNoErrors());
@@ -150,7 +156,7 @@ public class GreetingControllerTest {
 
     @Test
     public void testUpdateEmpty() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated"));
+        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "a@b.net", new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
@@ -173,7 +179,9 @@ public class GreetingControllerTest {
         mockMvc.perform(put("/greetings/{id}", 999L)
                         .accept(MediaType.TEXT_HTML)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("content", "updated"))
+                        .param("content", "updated")
+                        .param("email", "newtest@example.org")
+                        .param("date", new Date().toString()))
                 .andExpect(status().isNotFound())
                 .andExpect(view().name("error"))
                 .andExpect(forwardedUrl("/WEB-INF/views/error.jsp"));
@@ -200,7 +208,7 @@ public class GreetingControllerTest {
 
     @Test
     public void testDeleteExisting() throws Exception {
-        Greeting toBeRemoved = greetingRepository.save(new Greeting("toberemoved"));
+        Greeting toBeRemoved = greetingRepository.save(new Greeting("toberemoved", "a@b.net", new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(delete("/greetings/{id}", toBeRemoved.getId()).accept(MediaType.TEXT_HTML))

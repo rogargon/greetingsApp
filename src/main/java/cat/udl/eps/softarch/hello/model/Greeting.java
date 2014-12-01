@@ -34,19 +34,17 @@ public class Greeting {
 
     public Greeting() {}
 
-    public Greeting(String content) {
+    public Greeting(String content, String email, Date date) {
         this.content = content;
+        this.email = email;
+        this.date = date;
     }
 
     public long getId() { return id; }
 
-    public String getContent() {
-        return content;
-    }
+    public String getContent() { return content; }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+    public void setContent(String content) { this.content = content; }
 
     public String getEmail() { return email; }
 
