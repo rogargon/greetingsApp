@@ -1,11 +1,9 @@
-SpringMVC-HTML
-==============
+GreetigsApp
+===========
 
 [![Build Status](https://travis-ci.org/rogargon/springmvc-html.svg?branch=master)](https://travis-ci.org/rogargon/springmvc-html)
 
-This is a simple Spring demo of a Greetings application.
-
-Based on Spring and providing a RESTFul JSON API also available from an HTML user interface. 
+This is a simple Spring demo of a Greetings application providing a RESTFul JSON API also available from an HTML user interface. 
 
 Features:
 
