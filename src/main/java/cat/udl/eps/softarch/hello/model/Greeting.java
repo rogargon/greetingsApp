@@ -25,7 +25,7 @@ public class Greeting {
     @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String content;
 
-    @NotNull(message = "E-mail cannot be empty")
+    @NotBlank(message = "E-mail cannot be blank")
     @Email(message = "E-mail should be valid")
     private String email;
 
