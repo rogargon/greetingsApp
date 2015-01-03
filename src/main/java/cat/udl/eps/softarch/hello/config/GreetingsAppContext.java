@@ -26,7 +26,7 @@ import javax.sql.DataSource;
 @EnableWebMvc
 @ComponentScan("cat.udl.eps.softarch.hello")
 @EnableJpaRepositories("cat.udl.eps.softarch.hello.repository")
-@Import(RepositoryRestMvcConfiguration.class)
+@Import({GreetingsAppSecurity.class, RepositoryRestMvcConfiguration.class})
 @EnableTransactionManagement
 public class GreetingsAppContext extends WebMvcConfigurerAdapter{
 
