@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import cat.udl.eps.softarch.hello.config.GreetingsAppTestContext;
 import cat.udl.eps.softarch.hello.model.Greeting;
+import cat.udl.eps.softarch.hello.model.User;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
 import com.google.common.primitives.Ints;
 import org.junit.After;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,6 +39,7 @@ public class GreetingRepositoryTest {
 
     @Autowired
     GreetingRepository greetingRepository;
+    UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext wac;
@@ -47,7 +50,9 @@ public class GreetingRepositoryTest {
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         if (greetingRepository.count() == 0) {
-            Greeting g = new Greeting("test1", "test@example.org", new Date());
+            User u = new User("test", "test@example.org", AuthorityUtils.createAuthorityList("ROLE_USER"));
+            userRepository.save(u);
+            Greeting g = new Greeting("test1", u, new Date());
             greetingRepository.save(g);
         }
     }
@@ -87,7 +92,7 @@ public class GreetingRepositoryTest {
 
     @Test
     public void testCreate() throws Exception {
-        Greeting last = new Greeting("last", "test@example.org", new Date());
+        Greeting last = new Greeting("last", userRepository.findUserByUsername("test"), new Date());
         int nextGreetingId = Ints.checkedCast(greetingRepository.save(last).getId())+1;
         int startSize = Ints.checkedCast(greetingRepository.count());
 
@@ -121,7 +126,7 @@ public class GreetingRepositoryTest {
 
     @Test
     public void testUpdate() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "a@b.net", new Date()));
+        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", userRepository.findUserByUsername("test"), new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
@@ -133,13 +138,14 @@ public class GreetingRepositoryTest {
                 .andExpect(header().string("Location", "http://localhost/greetings/" + tobeupdated.getId()));
 
         assertEquals("updated", greetingRepository.findOne(tobeupdated.getId()).getContent());
-        assertEquals("newtest@example.org", greetingRepository.findOne(tobeupdated.getId()).getEmail());
+        assertEquals("newtest@example.org", greetingRepository.findOne(tobeupdated.getId()).getUser().getEmail());
         assertEquals(startSize, greetingRepository.count());
     }
 
     @Test
     public void testUpdateEmptyEmail() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "a@b.net", new Date()));
+        Greeting tobeupdated = greetingRepository.save(
+                new Greeting("tobeupdated", userRepository.findUserByUsername("test"), new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
@@ -156,7 +162,8 @@ public class GreetingRepositoryTest {
 
     @Test
     public void testUpdateWrongEmail() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "a@b.net", new Date()));
+        Greeting tobeupdated = greetingRepository.save(
+                new Greeting("tobeupdated", userRepository.findUserByUsername("test"), new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
@@ -173,7 +180,7 @@ public class GreetingRepositoryTest {
 
     @Test
     public void testUpdateNonExisting() throws Exception {
-        Greeting last = new Greeting("last", "test@example.org", new Date());
+        Greeting last = new Greeting("last", userRepository.findUserByUsername("test"), new Date());
         int nextGreetingId = Ints.checkedCast(greetingRepository.save(last).getId())+1;
         int startSize = Ints.checkedCast(greetingRepository.count());
 
@@ -190,7 +197,8 @@ public class GreetingRepositoryTest {
 
     @Test
     public void testDeleteExisting() throws Exception {
-        Greeting toBeRemoved = greetingRepository.save(new Greeting("toberemoved", "a@b.net", new Date()));
+        Greeting toBeRemoved = greetingRepository.save(
+                new Greeting("toberemoved", userRepository.findUserByUsername("test"), new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(delete("/greetings/{id}", toBeRemoved.getId()).accept(MediaType.APPLICATION_JSON))
