@@ -11,6 +11,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import cat.udl.eps.softarch.hello.service.GreetingEmailUpdateException;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -24,28 +25,35 @@ class GlobalDefaultExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     ModelAndView handleConstraintViolationException(HttpServletRequest request, Exception e) {
-        logger.info("Generating HTTP BAD REQUEST from ConstraintViolationException: {}", e);
+        logger.info("Generating HTTP BAD REQUEST from ConstraintViolationException: {}", e.toString());
         return contentNegotiatedErrorView(request, e);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ModelAndView handleMethodArgumentNotValidException(HttpServletRequest request, Exception e) {
-        logger.info("Generating HTTP BAD REQUEST from MethodArgumentNotValidException: {}", e);
+        logger.info("Generating HTTP BAD REQUEST from MethodArgumentNotValidException: {}", e.toString());
+        return contentNegotiatedErrorView(request, e);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(GreetingEmailUpdateException.class)
+    ModelAndView handleGreetingEmailUpdateException(HttpServletRequest request, Exception e) {
+        logger.info("Generating HTTP BAD REQUEST from GreetingEmailUpdateException: {}", e.toString());
         return contentNegotiatedErrorView(request, e);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NullPointerException.class)
     ModelAndView handleNotFound(HttpServletRequest request, Exception e) {
-        logger.info("Generating HTTP NOT FOUND from NullPointerException: {}", e);
+        logger.info("Generating HTTP NOT FOUND from NullPointerException: {}", e.toString());
         return contentNegotiatedErrorView(request, e);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
-        logger.info("Handling generic Exception: {}", e);
+        logger.info("Handling generic Exception: {}", e.toString());
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
             throw e;
         return contentNegotiatedErrorView(request, e);

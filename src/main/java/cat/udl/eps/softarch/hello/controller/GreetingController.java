@@ -3,6 +3,7 @@ package cat.udl.eps.softarch.hello.controller;
 import java.util.Date;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
+import cat.udl.eps.softarch.hello.service.UserGreetingsService;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,8 @@ import javax.validation.Valid;
 public class GreetingController {
     final Logger logger = LoggerFactory.getLogger(GreetingController.class);
 
-    @Autowired GreetingRepository greetingRepository;
+    @Autowired GreetingRepository   greetingRepository;
+    @Autowired UserGreetingsService userGreetingsService;
 
 // LIST
     @RequestMapping(method = RequestMethod.GET)
@@ -36,16 +38,16 @@ public class GreetingController {
         PageRequest request = new PageRequest(page, size);
         return greetingRepository.findAll(request).getContent();
     }
-    @RequestMapping(method=RequestMethod.GET, produces="text/html")
+    @RequestMapping(method = RequestMethod.GET, produces = "text/html")
     public ModelAndView listHTML(@RequestParam(required=false, defaultValue="0") int page,
                                  @RequestParam(required=false, defaultValue="10") int size) {
         return new ModelAndView("greetings", "greetings", list(page, size));
     }
 
 // RETRIEVE
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET )
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Greeting retrieve(@PathVariable( "id" ) Long id) {
+    public Greeting retrieve(@PathVariable("id") Long id) {
         logger.info("Retrieving greeting number {}", id);
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
         return greetingRepository.findOne(id);
@@ -61,8 +63,9 @@ public class GreetingController {
     @ResponseBody
     public Greeting create(@Valid @RequestBody Greeting greeting, HttpServletResponse response) {
         logger.info("Creating greeting with content'{}'", greeting.getContent());
-        response.setHeader("Location", "/greetings/" + greetingRepository.save(greeting).getId());
-        return greeting;
+        Greeting newGreeting = userGreetingsService.addGreetingToUser(greeting);
+        response.setHeader("Location", "/greetings/" + newGreeting.getId());
+        return newGreeting;
     }
     @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded", produces="text/html")
     public String createHTML(@Valid @ModelAttribute("greeting") Greeting greeting, BindingResult binding, HttpServletResponse response) {
@@ -88,11 +91,7 @@ public class GreetingController {
     public Greeting update(@PathVariable("id") Long id, @Valid @RequestBody Greeting greeting) {
         logger.info("Updating greeting {}, new content is '{}'", id, greeting.getContent());
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
-        Greeting updateGreeting = greetingRepository.findOne(id);
-        updateGreeting.setContent(greeting.getContent());
-        updateGreeting.setEmail(greeting.getEmail());
-        updateGreeting.setDate(greeting.getDate());
-        return greetingRepository.save(updateGreeting);
+        return userGreetingsService.updateGreetingFromUser(greeting, id);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/x-www-form-urlencoded")
     @ResponseStatus(HttpStatus.OK)
@@ -118,7 +117,7 @@ public class GreetingController {
     public void delete(@PathVariable("id") Long id) {
         logger.info("Deleting greeting number {}", id);
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
-        greetingRepository.delete(id);
+        userGreetingsService.removeGreetingFromUser(id);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     @ResponseStatus(HttpStatus.OK)

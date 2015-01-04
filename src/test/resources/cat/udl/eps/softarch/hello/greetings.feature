@@ -48,7 +48,7 @@ Feature: GreetingsAPI
       | content      | email             | date       |
       | Hello World! | test1@example.org | 11/30/2014 |
       | Bye          | test2@example.org | 12/01/2014 |
-    When the client updates greeting with id 1 with content "Just hello!", email "test@example.org" and date "11/30/2014"
+    When the client updates greeting with id 1 with content "Just hello!", email "test1@example.org" and date "11/30/2014"
     Then the response is status code 200
     And the response is a greeting with id 1 and content "Just hello!"
 
