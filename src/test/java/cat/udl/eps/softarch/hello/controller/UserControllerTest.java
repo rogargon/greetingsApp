@@ -53,13 +53,11 @@ public class UserControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         this.greetingDate = df.parse("2015-01-01");
 
-        if (greetingRepository.count() == 0) {
-            Greeting g = new Greeting("test-content", "test@example.org", greetingDate);
-            greetingRepository.save(g);
-            User u = new User("test-user", "test@example.org");
-            u.addGreeting(g);
-            userRepository.save(u);
-        }
+        Greeting g = new Greeting("test-content", "test@example.org", greetingDate);
+        greetingRepository.save(g);
+        User u = new User("test-user", "test@example.org");
+        u.addGreeting(g);
+        userRepository.save(u);
     }
 
     @After
