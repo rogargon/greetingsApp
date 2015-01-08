@@ -7,7 +7,7 @@ import cat.udl.eps.softarch.hello.model.User;
  * Created by http://rhizomik.net/~roberto/
  */
 public interface UserGreetingsService {
-    User getUserAndGreetings(Long userId);
+    User getUserAndGreetings(String username);
 
     Greeting addGreetingToUser(Greeting greeting);
 

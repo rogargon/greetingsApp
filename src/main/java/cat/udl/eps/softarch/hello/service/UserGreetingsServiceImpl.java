@@ -1,12 +1,10 @@
 package cat.udl.eps.softarch.hello.service;
 
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.model.User;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
@@ -26,8 +24,8 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
 
     @Transactional(readOnly = true)
     @Override
-    public User getUserAndGreetings(Long userId) {
-        User u = userRepository.findOne(userId);
+    public User getUserAndGreetings(String username) {
+        User u = userRepository.findOne(username);
         logger.info("User {} has {} greetings", u.getUsername(), u.getGreetings().size());
         return u;
     }

@@ -5,10 +5,9 @@ import org.springframework.data.repository.query.Param;
 import cat.udl.eps.softarch.hello.model.User;
 
 /**
- * Created by roberto on 02/01/15.
+ * Created by http://rhizomik.net/~roberto/
  */
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
 
-    User findUserByUsername(@Param("username") String username);
     User findUserByEmail(@Param("email") String email);
 }
