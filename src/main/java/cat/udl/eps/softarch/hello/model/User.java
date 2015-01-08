@@ -7,14 +7,11 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Created by roberto on 29/12/14.
+ * Created by http://rhizomik.net/~roberto/
  */
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     @NotBlank(message = "Username cannot be blank")
     private String username;
 
@@ -32,11 +29,7 @@ public class User {
         this.email = email;
     }
 
-    public long getId() { return id; }
-
     public String getUsername() { return username; }
-
-    public void setUsername(String username) { this.username = username; }
 
     public String getEmail() { return email; }
 

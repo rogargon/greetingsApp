@@ -40,16 +40,16 @@ public class UserController {
     }
 
     // RETRIEVE
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     @ResponseBody
-    public User retrieve(@PathVariable("id") Long id) {
-        logger.info("Retrieving user number {}", id);
-        Preconditions.checkNotNull(userRepository.findOne(id), "User with id %s not found", id);
-        return userGreetingsService.getUserAndGreetings(id);
+    public User retrieve(@PathVariable("username") String username) {
+        logger.info("Retrieving user {}", username);
+        Preconditions.checkNotNull(userRepository.findOne(username), "User with id %s not found", username);
+        return userGreetingsService.getUserAndGreetings(username);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView retrieveHTML(@PathVariable( "id" ) Long id) {
-        return new ModelAndView("user", "user", retrieve(id));
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET, produces = "text/html")
+    public ModelAndView retrieveHTML(@PathVariable("username") String username) {
+        return new ModelAndView("user", "user", retrieve(username));
     }
 }
