@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +34,10 @@ public class User implements UserDetails{
     @JsonIgnore
     private String password;
 
-    public User() { }
+    @URL
+    private String imageUrl;
+
+    public User() {}
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -46,6 +50,26 @@ public class User implements UserDetails{
 
     @Override
     public String getPassword() { return password; }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public List<Greeting> getGreetings() {
+        return greetings;
+    }
+
+    public void addGreeting(Greeting newGreeting) {
+        greetings.add(newGreeting);
+    }
+
+    public void removeGreeting(Greeting greeting) {
+        greetings.remove(greeting);
+    }
 
     @Override
     @JsonIgnore
@@ -68,16 +92,4 @@ public class User implements UserDetails{
     @Override
     @JsonIgnore
     public boolean isEnabled() { return true; }
-
-    public String getEmail() { return email; }
-
-    public void setEmail(String email) { this.email = email; }
-
-    public List<Greeting> getGreetings() { return greetings; }
-
-    public void addGreeting(Greeting newGreeting) { greetings.add(newGreeting); }
-
-    public void removeGreeting(Greeting greeting) {
-        greetings.remove(greeting);
-    }
 }

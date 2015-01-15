@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.hello.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
@@ -17,7 +16,7 @@ import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 
 /**
- * Created by roberto on 14/01/15.
+ * Created by http://rhizomik.net/~roberto/
  */
 @Configuration
 @EnableSocial

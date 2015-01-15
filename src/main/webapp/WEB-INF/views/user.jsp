@@ -11,6 +11,9 @@
     <c:if test="${not empty user.getEmail()}">
         <p>E-mail: ${user.getEmail()}</p>
     </c:if>
+    <c:if test="${not empty user.getImageUrl()}">
+        <img src="${user.getImageUrl()}"/>
+    </c:if>
     <c:if test="${not empty user.getGreetings()}">
         <h3>User Greetings</h3>
         <c:forEach var="greeting" items="${user.getGreetings()}">
