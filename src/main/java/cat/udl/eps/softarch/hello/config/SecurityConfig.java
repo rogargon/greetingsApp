@@ -23,7 +23,7 @@ import cat.udl.eps.softarch.hello.service.RepositoryUserDetailsService;
 import cat.udl.eps.softarch.hello.service.SimpleSocialUserDetailsService;
 
 /**
- * Created by roberto on 13/01/15.
+ * Created by http://rhizomik.net/~roberto/
  */
 @Configuration
 @EnableWebSecurity
@@ -43,27 +43,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .formLogin()
+            .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login/authenticate")
                 .failureUrl("/login?error=bad_credentials")
-                .and()
+            .and()
                 .logout()
                 .deleteCookies("JSESSIONID")
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
-                .and()
+            .and()
                 .authorizeRequests()
                 .antMatchers(
                         "/auth/**",
                         "/login",
                         "/signup/**",
-                        "/user/register/**",
                         "/greetings/**").permitAll()
                 .antMatchers("/users/**").authenticated()
-                .and()
+            .and()
                 .rememberMe()
-                .and()
+            .and()
                 .apply(new SpringSocialConfigurer());
     }
 

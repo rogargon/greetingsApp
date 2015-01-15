@@ -17,7 +17,7 @@ import org.springframework.social.security.AuthenticationNameUserIdSource;
 import org.springframework.social.twitter.connect.TwitterConnectionFactory;
 
 /**
- * Created by roberto on 14/01/15.
+ * Created by http://rhizomik.net/~roberto/
  */
 @Configuration
 @EnableSocial

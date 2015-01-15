@@ -5,8 +5,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/social-buttons-3.css"/>
+    <title>GreetingsApp Login</title>
 </head>
 <body>
 <div class="page-header">
@@ -15,21 +14,16 @@
 
 <sec:authorize access="isAnonymous()">
     <!-- Social Sign In Buttons -->
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <h2>Twitter Sign In</h2>
-            <div class="row social-button-row">
-                <div class="col-lg-4">
-                    <!-- Add Twitter sign in Button -->
-                    <a href="${pageContext.request.contextPath}/auth/twitter"><button class="btn btn-twitter"><i class="icon-twitter"></i> | Sign in with Twitter</button></a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <p>
+        <a href="${pageContext.request.contextPath}/auth/twitter">
+            <img src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-gray.png"/>
+        </a>
+    </p>
 </sec:authorize>
 
 <sec:authorize access="isAuthenticated()">
     <p>User already authenticated</p>
 </sec:authorize>
+
 </body>
 </html>
