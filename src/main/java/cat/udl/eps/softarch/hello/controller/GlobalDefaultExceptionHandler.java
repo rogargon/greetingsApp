@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
-import cat.udl.eps.softarch.hello.service.GreetingEmailUpdateException;
+import cat.udl.eps.softarch.hello.service.GreetingUsernameUpdateException;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -37,7 +37,7 @@ class GlobalDefaultExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(GreetingEmailUpdateException.class)
+    @ExceptionHandler(GreetingUsernameUpdateException.class)
     ModelAndView handleGreetingEmailUpdateException(HttpServletRequest request, Exception e) {
         logger.info("Generating HTTP BAD REQUEST from GreetingEmailUpdateException: {}", e.toString());
         return contentNegotiatedErrorView(request, e);

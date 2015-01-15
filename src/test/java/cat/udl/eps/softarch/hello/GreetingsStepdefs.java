@@ -1,13 +1,8 @@
 package cat.udl.eps.softarch.hello;
 
-import cat.udl.eps.softarch.hello.config.GreetingsAppTestContext;
-import cat.udl.eps.softarch.hello.model.Greeting;
-import cat.udl.eps.softarch.hello.repository.GreetingRepository;
-import cucumber.api.DataTable;
-import cucumber.api.PendingException;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,14 +11,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import cat.udl.eps.softarch.hello.config.ApplicationConfig;
+import cat.udl.eps.softarch.hello.model.Greeting;
+import cat.udl.eps.softarch.hello.repository.GreetingRepository;
+import cucumber.api.DataTable;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @WebAppConfiguration
-@ContextConfiguration(classes = GreetingsAppTestContext.class)
+@ContextConfiguration(classes = ApplicationConfig.class)
 public class GreetingsStepdefs {
 
     static DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

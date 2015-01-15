@@ -4,7 +4,7 @@
 
     <display-name>Spring MVC HTML Application</display-name>
 
-    <!-- Filter to support HTTP PUT and DELETE from HTML Forms with Spring form tags -->
+    <!-- Filter to support HTTP PUT and DELETE from HTML Forms with Spring form tags -
     <filter>
         <filter-name>httpMethodFilter</filter-name>
         <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
@@ -14,7 +14,7 @@
         <servlet-name>DispatcherServlet</servlet-name>
     </filter-mapping>
 
-    <!-- Filter includes headers for Cross-Origin Resource Sharing (CORS) in the response -->
+    <!- Filter includes headers for Cross-Origin Resource Sharing (CORS) in the response
     <filter>
         <filter-name>simpleCORSFilter</filter-name>
         <filter-class>cat.udl.eps.softarch.hello.filter.SimpleCORSFilter</filter-class>
@@ -22,7 +22,17 @@
     <filter-mapping>
         <filter-name>simpleCORSFilter</filter-name>
         <servlet-name>DispatcherServlet</servlet-name>
-    </filter-mapping>
+    </filter-mapping -->
+
+    <!-- Filter includes headers for Cross-Origin Resource Sharing (CORS) in the response -
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <servlet-name>DispatcherServlet</servlet-name>
+    </filter-mapping> -->
 
     <!-- API Front Controller -->
     <servlet>

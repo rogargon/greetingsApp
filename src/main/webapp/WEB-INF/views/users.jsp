@@ -7,7 +7,7 @@
     <ul>
     <c:if test="${not empty users}">
         <c:forEach var="user" items="${users}">
-        <li><a href="/users/${user.getId()}">${user.getUsername()}</a></li>
+        <li><a href="/users/${user.getUsername()}">${user.getUsername()}</a></li>
         </c:forEach>
     </c:if>
     </ul>
