@@ -22,18 +22,17 @@ public class Greeting {
     @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String content;
 
-    @NotBlank(message = "E-mail cannot be blank")
-    @Email(message = "E-mail should be valid")
-    private String email;
+    @NotBlank(message = "Username cannot be blank")
+    private String username;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
     public Greeting() {}
 
-    public Greeting(String content, String email, Date date) {
+    public Greeting(String content, String username, Date date) {
         this.content = content;
-        this.email = email;
+        this.username = username;
         this.date = date;
     }
 
@@ -43,9 +42,9 @@ public class Greeting {
 
     public void setContent(String content) { this.content = content; }
 
-    public String getEmail() { return email; }
+    public String getUsername() { return username; }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setUsername(String username) { this.username = username; }
 
     public Date getDate() { return date; }
 
