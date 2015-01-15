@@ -35,7 +35,6 @@ public class ApplicationInitializer implements WebApplicationInitializer {
         FilterRegistration.Dynamic httpMethods = servletContext.addFilter("hiddenHttpMethodFilter", new HiddenHttpMethodFilter());
         httpMethods.addMappingForUrlPatterns(dispatcherTypes, true, "/api/*");
 
-
         servletContext.addListener(new ContextLoaderListener(rootContext));
     }
 }

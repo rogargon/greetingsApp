@@ -9,6 +9,7 @@
 
 <c:if test="${not empty greeting}">
     <h2>Greeting number ${greeting.getId()}</h2>
+<<<<<<< HEAD
     <p>Message: ${fn:escapeXml(greeting.getContent())}
         (<a href="/api/greetings/${greeting.getId()}/form">edit</a>)</p>
     <p>By ${greeting.getEmail()} on ${greeting.getDate()}</p>

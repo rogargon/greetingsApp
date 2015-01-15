@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "GreetingsUser") //Avoid collision with system table User in Postgres
-public class User implements UserDetails {
+public class User implements UserDetails{
     @Id
     @NotBlank(message = "Username cannot be blank")
     private String username;
@@ -77,5 +77,7 @@ public class User implements UserDetails {
 
     public void addGreeting(Greeting newGreeting) { greetings.add(newGreeting); }
 
-    public void removeGreeting(Greeting greeting) { greetings.remove(greeting); }
+    public void removeGreeting(Greeting greeting) {
+        greetings.remove(greeting);
+    }
 }

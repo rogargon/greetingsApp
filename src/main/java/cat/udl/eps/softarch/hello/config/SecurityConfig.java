@@ -3,6 +3,7 @@ package cat.udl.eps.softarch.hello.config;
 import cat.udl.eps.softarch.hello.filter.CSRFCookieFilter;
 import cat.udl.eps.softarch.hello.repository.UserRepository;
 import cat.udl.eps.softarch.hello.service.RepositoryUserDetailsService;
+import cat.udl.eps.softarch.hello.service.SimpleSocialUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.social.security.SocialUserDetailsService;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -32,14 +35,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().and()
+        http.formLogin()
+                .loginPage("/api/login")
+                .loginProcessingUrl("/api/login/authenticate")
+                .failureUrl("/api/login?error=bad_credentials")
+                .and()
+                .logout()
+                .deleteCookies("JSESSIONID")
+                .logoutUrl("/api/logout")
+                .logoutSuccessUrl("/api/login")
+                .and()
                 .authorizeRequests()
                     .antMatchers("/api/*/form").authenticated()
                     .antMatchers("/api/users/**").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                     .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
                     .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
-                    .anyRequest().permitAll().and()
+                    .antMatchers(
+                            "/api/auth/**",
+                            "/api/login",
+                            "/api/signup/**",
+                            "/api/users/register/**",
+                            "/api/greetings/**").permitAll()
+                .and()
+                .rememberMe()
+                .and()
+                .apply(new SpringSocialConfigurer()).and()
                 .addFilterAfter(new CSRFCookieFilter(), CsrfFilter.class)
                 .csrf().csrfTokenRepository(csrfTokenRepository());
     }
@@ -56,5 +77,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-XSRF-TOKEN");
         return repository;
+    }
+
+    @Bean
+    public SocialUserDetailsService socialUserDetailsService() {
+        return new SimpleSocialUserDetailsService(userDetailsService());
     }
 }
