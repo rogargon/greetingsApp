@@ -9,7 +9,7 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /**
- * Created by roberto on 14/01/15.
+ * Created by http://rhizomik.net/~roberto/
  */
 public class ApplicationInitializer implements WebApplicationInitializer {
 

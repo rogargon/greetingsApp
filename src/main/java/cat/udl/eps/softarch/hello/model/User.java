@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +26,11 @@ public class User implements UserDetails{
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Greeting> greetings = new ArrayList<>();
 
-    public User() { }
+    @URL
+    private String imageUrl;
+
+    public User() {
+    }
 
     public User(String username, String email) {
         this.username = username;
@@ -38,6 +43,10 @@ public class User implements UserDetails{
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public List<Greeting> getGreetings() {
         return greetings;

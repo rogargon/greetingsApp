@@ -42,7 +42,7 @@ import javax.sql.DataSource;
 public class ApplicationConfig extends WebMvcConfigurerAdapter{
 
     @Inject
-    ApplicationContext context;
+    private Environment env;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -65,7 +65,6 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public DataSource dataSource() throws URISyntaxException {
-        Environment env = context.getEnvironment();
 
         if (env.getProperty("database.type") == "postgresql") {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -86,7 +85,6 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws URISyntaxException {
-        Environment env = context.getEnvironment();
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         if (env.getProperty("database.type") == "postgresql") {
