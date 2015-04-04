@@ -1,8 +1,5 @@
 package cat.udl.eps.softarch.hello.config;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +19,16 @@ import org.springframework.social.connect.web.ConnectController;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -66,7 +67,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
     @Bean
     public DataSource dataSource() throws URISyntaxException {
 
-        if (env.getProperty("database.type") == "postgresql") {
+        if (env.getProperty("database.type").equals("postgresql")) {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
             URI dbUri = new URI(System.getenv("DATABASE_URL"));
             String username = dbUri.getUserInfo().split(":")[0];
@@ -76,6 +77,11 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
             dataSource.setUrl(dbUrl);
             dataSource.setUsername(username);
             dataSource.setPassword(password);
+            return dataSource;
+        } else if (env.getProperty("database.type").equals("hsqldb-file")) {
+            DriverManagerDataSource dataSource = new DriverManagerDataSource();
+            dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
+            dataSource.setUrl("jdbc:hsqldb:file:~/hsql/db");
             return dataSource;
         } else {
             EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
