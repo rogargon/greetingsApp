@@ -24,7 +24,7 @@ public class UserController {
     @Autowired UserRepository       userRepository;
     @Autowired UserGreetingsService userGreetingsService;
 
-    // LIST
+// LIST
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Iterable<User> list(@RequestParam(required = false, defaultValue = "0") int page,
@@ -33,23 +33,12 @@ public class UserController {
         return userRepository.findAll(request).getContent();
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView listHTML(@RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "10") int size) {
-        return new ModelAndView("users", "users", list(page, size));
-    }
-
-    // RETRIEVE
+// RETRIEVE
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     @ResponseBody
     public User retrieve(@PathVariable("username") String username) {
         logger.info("Retrieving user {}", username);
         Preconditions.checkNotNull(userRepository.findOne(username), "User with id %s not found", username);
         return userGreetingsService.getUserAndGreetings(username);
-    }
-
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView retrieveHTML(@PathVariable("username") String username) {
-        return new ModelAndView("user", "user", retrieve(username));
     }
 }

@@ -38,11 +38,6 @@ public class GreetingController {
         PageRequest request = new PageRequest(page, size);
         return greetingRepository.findAll(request).getContent();
     }
-    @RequestMapping(method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView listHTML(@RequestParam(required=false, defaultValue="0") int page,
-                                 @RequestParam(required=false, defaultValue="10") int size) {
-        return new ModelAndView("greetings", "greetings", list(page, size));
-    }
 
 // RETRIEVE
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -51,10 +46,6 @@ public class GreetingController {
         logger.info("Retrieving greeting number {}", id);
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
         return greetingRepository.findOne(id);
-    }
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView retrieveHTML(@PathVariable( "id" ) Long id) {
-        return new ModelAndView("greeting", "greeting", retrieve(id));
     }
 
 // CREATE
@@ -67,22 +58,6 @@ public class GreetingController {
         response.setHeader("Location", "/greetings/" + newGreeting.getId());
         return newGreeting;
     }
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded", produces="text/html")
-    public String createHTML(@Valid @ModelAttribute("greeting") Greeting greeting, BindingResult binding, HttpServletResponse response) {
-        if (binding.hasErrors()) {
-            logger.info("Validation error: {}", binding);
-            return "form";
-        }
-        return "redirect:/greetings/"+create(greeting, response).getId();
-    }
-    // Create form
-    @RequestMapping(value = "/form", method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView createForm() {
-        logger.info("Generating form for greeting creation");
-        Greeting emptyGreeting = new Greeting();
-        emptyGreeting.setDate(new Date());
-        return new ModelAndView("form", "greeting", emptyGreeting);
-    }
 
 // UPDATE
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -93,23 +68,6 @@ public class GreetingController {
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
         return userGreetingsService.updateGreetingFromUser(greeting, id);
     }
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/x-www-form-urlencoded")
-    @ResponseStatus(HttpStatus.OK)
-    public String updateHTML(@PathVariable("id") Long id, @Valid @ModelAttribute("greeting") Greeting greeting,
-                         BindingResult binding) {
-        if (binding.hasErrors()) {
-            logger.info("Validation error: {}", binding);
-            return "form";
-        }
-        return "redirect:/greetings/"+update(id, greeting).getId();
-    }
-    // Update form
-    @RequestMapping(value = "/{id}/form", method = RequestMethod.GET, produces = "text/html")
-    public ModelAndView updateForm(@PathVariable("id") Long id) {
-        logger.info("Generating form for updating greeting number {}", id);
-        Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
-        return new ModelAndView("form", "greeting", greetingRepository.findOne(id));
-    }
 
 // DELETE
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -118,11 +76,5 @@ public class GreetingController {
         logger.info("Deleting greeting number {}", id);
         Preconditions.checkNotNull(greetingRepository.findOne(id), "Greeting with id %s not found", id);
         userGreetingsService.removeGreetingFromUser(id);
-    }
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    @ResponseStatus(HttpStatus.OK)
-    public String deleteHTML(@PathVariable("id") Long id) {
-        delete(id);
-        return "redirect:/greetings";
     }
 }

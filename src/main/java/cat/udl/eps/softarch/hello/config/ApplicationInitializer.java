@@ -2,6 +2,8 @@ package cat.udl.eps.softarch.hello.config;
 
 import java.util.EnumSet;
 import javax.servlet.*;
+
+import cat.udl.eps.softarch.hello.filter.SimpleCORSFilter;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -20,12 +22,11 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(rootContext));
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/");
+        dispatcher.addMapping("/api/*");
 
         EnumSet<DispatcherType> dispatcherTypes = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD);
-
-        FilterRegistration.Dynamic security = servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy());
-        security.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
+        FilterRegistration.Dynamic cors = servletContext.addFilter("simpleCORSFilter", new SimpleCORSFilter());
+        cors.addMappingForUrlPatterns(dispatcherTypes, true, "/api/*");
 
         servletContext.addListener(new ContextLoaderListener(rootContext));
     }

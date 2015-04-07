@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.hello.model;
 
 import java.util.Date;
+
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,17 +23,17 @@ public class Greeting {
     @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String content;
 
-    @NotBlank(message = "Username cannot be blank")
-    private String username;
+    @Email(message = "Invalid E-Mail")
+    private String email;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
     public Greeting() {}
 
-    public Greeting(String content, String username, Date date) {
+    public Greeting(String content, String email, Date date) {
         this.content = content;
-        this.username = username;
+        this.email = email;
         this.date = date;
     }
 
@@ -42,9 +43,9 @@ public class Greeting {
 
     public void setContent(String content) { this.content = content; }
 
-    public String getUsername() { return username; }
+    public String getEmail() { return email; }
 
-    public void setUsername(String username) { this.username = username; }
+    public void setEmail(String email) { this.email = email; }
 
     public Date getDate() { return date; }
 
