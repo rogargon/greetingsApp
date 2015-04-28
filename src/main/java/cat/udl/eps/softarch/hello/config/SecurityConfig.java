@@ -1,5 +1,12 @@
 package cat.udl.eps.softarch.hello.config;
 
+import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +21,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor;
 import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
 import cat.udl.eps.softarch.hello.repository.UserRepository;
 import cat.udl.eps.softarch.hello.service.RepositoryUserDetailsService;
@@ -64,6 +76,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
             .and()
                 .apply(new SpringSocialConfigurer());
+
+        http.csrf().disable();
+        //http.csrf().csrfTokenRepository(csrfTokenRepository()).and()
+        //        .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+    }
+
+    private CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName("X-CSRF-TOKEN");
+        return repository;
     }
 
     @Bean

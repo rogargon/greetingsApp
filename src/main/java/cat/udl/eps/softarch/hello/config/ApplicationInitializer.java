@@ -6,7 +6,9 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.DispatcherServlet;
+import cat.udl.eps.softarch.hello.filter.SimpleCORSFilter;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -26,6 +28,12 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 
         FilterRegistration.Dynamic security = servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy());
         security.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
+
+        FilterRegistration.Dynamic cors = servletContext.addFilter("simpleCORSFilter", new SimpleCORSFilter());
+        cors.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
+
+        FilterRegistration.Dynamic httpMethod = servletContext.addFilter("httpMethodFilter", new HiddenHttpMethodFilter());
+        httpMethod.addMappingForUrlPatterns(dispatcherTypes, true, "/*");
 
         servletContext.addListener(new ContextLoaderListener(rootContext));
     }

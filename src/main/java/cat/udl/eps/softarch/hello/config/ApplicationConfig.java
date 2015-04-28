@@ -2,7 +2,6 @@ package cat.udl.eps.softarch.hello.config;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -77,9 +76,14 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
             dataSource.setUsername(username);
             dataSource.setPassword(password);
             return dataSource;
-        } else {
+        } else if (env.getProperty("database.type") == "hsql") {
             EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
             return builder.setType(EmbeddedDatabaseType.HSQL).build();
+        } else {
+            DriverManagerDataSource dataSource = new DriverManagerDataSource();
+            dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
+            dataSource.setUrl("jdbc:hsqldb:file:~/hsqldb/data");
+            return dataSource;
         }
     }
 
