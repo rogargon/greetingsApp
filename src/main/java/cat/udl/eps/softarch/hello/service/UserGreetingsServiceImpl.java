@@ -33,10 +33,10 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
     @Transactional
     @Override
     public Greeting addGreetingToUser(Greeting g) {
-        User u = userRepository.findOne(g.getEmail());
+        User u = userRepository.findUserByEmail(g.getEmail());
         if (u == null) {
-            String username = g.getEmail();
-            u = new User(username, "");
+            String username = g.getEmail().substring(0,g.getEmail().indexOf('@'));
+            u = new User(username, g.getEmail());
         }
         greetingRepository.save(g);
         u.addGreeting(g);
@@ -51,7 +51,7 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
         oldGreeting.setContent(updateGreeting.getContent());
         oldGreeting.setDate(updateGreeting.getDate());
         if (!updateGreeting.getEmail().equals(oldGreeting.getEmail())) {
-            throw new GreetingUsernameUpdateException("Greeting username cannot be updated");
+            throw new GreetingUsernameUpdateException("Greeting e-mail cannot be updated");
         }
         return greetingRepository.save(oldGreeting);
     }
@@ -60,7 +60,7 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
     @Override
     public void removeGreetingFromUser(Long greetingId) {
         Greeting g = greetingRepository.findOne(greetingId);
-        User u = userRepository.findOne(g.getEmail());
+        User u = userRepository.findUserByEmail(g.getEmail());
         if (u != null) {
             u.removeGreeting(g);
             userRepository.save(u);

@@ -1,9 +1,11 @@
 package cat.udl.eps.softarch.hello.controller;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import cat.udl.eps.softarch.hello.config.ApplicationConfig;
+import cat.udl.eps.softarch.hello.model.Greeting;
+import cat.udl.eps.softarch.hello.model.User;
+import cat.udl.eps.softarch.hello.repository.GreetingRepository;
+import cat.udl.eps.softarch.hello.repository.UserRepository;
+import com.google.common.primitives.Ints;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +20,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import com.google.common.primitives.Ints;
-import cat.udl.eps.softarch.hello.config.ApplicationConfig;
-import cat.udl.eps.softarch.hello.model.Greeting;
-import cat.udl.eps.softarch.hello.model.User;
-import cat.udl.eps.softarch.hello.repository.GreetingRepository;
-import cat.udl.eps.softarch.hello.repository.UserRepository;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -58,7 +59,7 @@ public class UserControllerTest {
 
         Greeting g = new Greeting("test-content", "test@example.org", greetingDate);
         greetingRepository.save(g);
-        User u = new User("test-user", "test@example.org");
+        User u = new User("test", "test@example.org");
         u.addGreeting(g);
         userRepository.save(u);
     }
@@ -78,19 +79,19 @@ public class UserControllerTest {
                 .andExpect(model().attributeExists("users"))
                 .andExpect(model().attribute("users", hasSize(startSize)))
                 .andExpect(model().attribute("users", hasItem(allOf(
-                        hasProperty("username", is("test-user")),
+                        hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org"))))));
     }
 
     @Test
     public void testRetrieveExisting() throws Exception {
-        mockMvc.perform(get("/users/{id}", "test-user").accept(MediaType.TEXT_HTML))
+        mockMvc.perform(get("/users/{id}", "test").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user"))
                 .andExpect(forwardedUrl("/WEB-INF/views/user.jsp"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("user", allOf(
-                        hasProperty("username", is("test-user")),
+                        hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org")),
                         hasProperty("greetings", contains( allOf(
                                 hasProperty("id", is(1L)),
@@ -119,19 +120,19 @@ public class UserControllerTest {
                 .param("email", "test@example.org")
                 .param("date", df.format(greetingDate)))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings/" + (startSize + 1)))
+                .andExpect(view().name("redirect:greetings/" + (startSize + 1)))
                 .andExpect(model().hasNoErrors())
                 .andExpect(model().attribute("greeting", hasProperty("content", is("newtest"))));
 
         assertEquals(startSize + 1, greetingRepository.count());
 
-        mockMvc.perform(get("/users/{id}", "test-user").accept(MediaType.TEXT_HTML))
+        mockMvc.perform(get("/users/{id}", "test").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user"))
                 .andExpect(forwardedUrl("/WEB-INF/views/user.jsp"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("user", allOf(
-                        hasProperty("username", is("test-user")),
+                        hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org")),
                         hasProperty("greetings", hasSize(startSize+1)),
                         hasProperty("greetings", contains(
@@ -157,7 +158,7 @@ public class UserControllerTest {
                 .param("email", "newuser@example.org")
                 .param("date", df.format(greetingDate)))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings/" + (startSize + 1)))
+                .andExpect(view().name("redirect:greetings/" + (startSize + 1)))
                 .andExpect(model().hasNoErrors())
                 .andExpect(model().attribute("greeting", hasProperty("content", is("newtest"))));
 
@@ -186,18 +187,18 @@ public class UserControllerTest {
 
         mockMvc.perform(delete("/greetings/{id}", 1L).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings"));
+                .andExpect(view().name("redirect:"));
 
         assertEquals(startSize-1, greetingRepository.count());
         assertThat(greetingRepository.findAll(), not(contains(hasProperty("id", is(1L)))));
 
-        mockMvc.perform(get("/users/{id}", "test-user").accept(MediaType.TEXT_HTML))
+        mockMvc.perform(get("/users/{id}", "test").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user"))
                 .andExpect(forwardedUrl("/WEB-INF/views/user.jsp"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("user", allOf(
-                        hasProperty("username", is("test-user")),
+                        hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org")),
                         hasProperty("greetings", hasSize(0)))));
     }
@@ -213,19 +214,19 @@ public class UserControllerTest {
                 .param("email", "test@example.org")
                 .param("date", df.format(greetingDate)))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings/"+1L))
+                .andExpect(view().name("redirect:"+1L))
                 .andExpect(model().hasNoErrors());
 
         assertEquals("updated-content", greetingRepository.findOne(1L).getContent());
         assertEquals(startSize, greetingRepository.count());
 
-        mockMvc.perform(get("/users/{id}", "test-user").accept(MediaType.TEXT_HTML))
+        mockMvc.perform(get("/users/{id}", "test").accept(MediaType.TEXT_HTML))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user"))
                 .andExpect(forwardedUrl("/WEB-INF/views/user.jsp"))
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("user", allOf(
-                        hasProperty("username", is("test-user")),
+                        hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org")),
                         hasProperty("greetings", hasSize(1)),
                         hasProperty("greetings", contains(

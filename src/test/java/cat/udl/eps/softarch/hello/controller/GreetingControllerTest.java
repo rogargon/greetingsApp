@@ -1,15 +1,5 @@
 package cat.udl.eps.softarch.hello.controller;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import cat.udl.eps.softarch.hello.config.ApplicationConfig;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.model.User;
@@ -30,6 +20,17 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationConfig.class)
@@ -115,7 +116,7 @@ public class GreetingControllerTest {
                         .param("email", "newtest@example.org")
                         .param("date", df.format(new Date())))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings/" + (startSize + 1)))
+                .andExpect(view().name("redirect:greetings/" + (startSize + 1)))
                 .andExpect(model().hasNoErrors())
                 .andExpect(model().attribute("greeting", hasProperty("content", is("newtest"))));
 
@@ -160,7 +161,7 @@ public class GreetingControllerTest {
                         .param("email", "test@example.org")
                         .param("date", df.format(new Date())))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings/"+tobeupdated.getId()))
+                .andExpect(view().name("redirect:"+tobeupdated.getId()))
                 .andExpect(model().hasNoErrors());
 
         assertEquals("updated", greetingRepository.findOne(tobeupdated.getId()).getContent());
@@ -226,7 +227,7 @@ public class GreetingControllerTest {
 
         mockMvc.perform(delete("/greetings/{id}", toBeRemoved.getId()).accept(MediaType.TEXT_HTML))
                 .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/greetings"));
+                .andExpect(view().name("redirect:"));
 
         assertEquals(startSize-1, greetingRepository.count());
         assertThat(greetingRepository.findAll(), not(hasItem(toBeRemoved)));
