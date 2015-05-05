@@ -1,4 +1,7 @@
 language: java
+branches:
+  only:
+    - master
 notifications:
   email: rogargon@gmail.com
   on_success: change
