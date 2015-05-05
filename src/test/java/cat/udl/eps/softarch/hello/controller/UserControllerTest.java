@@ -93,11 +93,11 @@ public class UserControllerTest {
                 .andExpect(model().attribute("user", allOf(
                         hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org")),
-                        hasProperty("greetings", contains( allOf(
-                                hasProperty("id", is(1L)),
-                                hasProperty("content", is("test-content")),
-                                hasProperty("email", is("test@example.org")),
-                                hasProperty("date", comparesEqualTo(greetingDate)))
+                        hasProperty("greetings", contains(allOf(
+                                        hasProperty("id", is(1L)),
+                                        hasProperty("content", is("test-content")),
+                                        hasProperty("email", is("test@example.org")),
+                                        hasProperty("date", comparesEqualTo(greetingDate)))
                         )))));
     }
 
@@ -134,7 +134,7 @@ public class UserControllerTest {
                 .andExpect(model().attribute("user", allOf(
                         hasProperty("username", is("test")),
                         hasProperty("email", is("test@example.org")),
-                        hasProperty("greetings", hasSize(startSize+1)),
+                        hasProperty("greetings", hasSize(startSize + 1)),
                         hasProperty("greetings", contains(
                                 allOf(
                                         hasProperty("id", is(1L)),
@@ -182,28 +182,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRemoveGreetingFromExistingUser() throws Exception {
-        int startSize = Ints.checkedCast(greetingRepository.count());
-
-        mockMvc.perform(delete("/greetings/{id}", 1L).accept(MediaType.TEXT_HTML))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:"));
-
-        assertEquals(startSize-1, greetingRepository.count());
-        assertThat(greetingRepository.findAll(), not(contains(hasProperty("id", is(1L)))));
-
-        mockMvc.perform(get("/users/{id}", "test").accept(MediaType.TEXT_HTML))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user"))
-                .andExpect(forwardedUrl("/WEB-INF/views/user.jsp"))
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attribute("user", allOf(
-                        hasProperty("username", is("test")),
-                        hasProperty("email", is("test@example.org")),
-                        hasProperty("greetings", hasSize(0)))));
-    }
-
-    @Test
+    @DirtiesContext
     public void testUpdateGreetingFromExistingUser() throws Exception {
         int startSize = Ints.checkedCast(greetingRepository.count());
         Date greetingDate = new Date();
@@ -258,5 +237,27 @@ public class UserControllerTest {
 
         assertEquals("test-content", greetingRepository.findOne(1L).getContent());
         assertEquals(startSize, greetingRepository.count());
+    }
+
+    @Test
+    public void testRemoveGreetingFromExistingUser() throws Exception {
+        int startSize = Ints.checkedCast(greetingRepository.count());
+
+        mockMvc.perform(delete("/greetings/{id}", 1L).accept(MediaType.TEXT_HTML))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:"));
+
+        assertEquals(startSize - 1, greetingRepository.count());
+        assertThat(greetingRepository.findAll(), not(contains(hasProperty("id", is(1L)))));
+
+        mockMvc.perform(get("/users/{id}", "test").accept(MediaType.TEXT_HTML))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user"))
+                .andExpect(forwardedUrl("/WEB-INF/views/user.jsp"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attribute("user", allOf(
+                        hasProperty("username", is("test")),
+                        hasProperty("email", is("test@example.org")),
+                        hasProperty("greetings", hasSize(0)))));
     }
 }
