@@ -1,6 +1,5 @@
 package cat.udl.eps.softarch.hello.controller;
 
-import java.util.Date;
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
 import cat.udl.eps.softarch.hello.service.UserGreetingsService;
@@ -11,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -55,7 +52,7 @@ public class GreetingController {
     public Greeting create(@Valid @RequestBody Greeting greeting, HttpServletResponse response) {
         logger.info("Creating greeting with content'{}'", greeting.getContent());
         Greeting newGreeting = userGreetingsService.addGreetingToUser(greeting);
-        response.setHeader("Location", "/greetings/" + newGreeting.getId());
+        response.setHeader("Location", "greetings/" + newGreeting.getId());
         return newGreeting;
     }
 
