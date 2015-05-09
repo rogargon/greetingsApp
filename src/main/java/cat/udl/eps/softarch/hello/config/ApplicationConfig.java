@@ -52,8 +52,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public DataSource dataSource() throws URISyntaxException {
-
-        if (env.getProperty("database.type").equals("postgresql")) {
+        if (System.getenv("DATABASE_URL")!=null && System.getenv("DATABASE_URL").startsWith("postgres")) {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
             URI dbUri = new URI(System.getenv("DATABASE_URL"));
             String username = dbUri.getUserInfo().split(":")[0];
