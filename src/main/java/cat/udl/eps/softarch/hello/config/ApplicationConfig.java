@@ -78,7 +78,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter{
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws URISyntaxException {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        if (env.getProperty("database.type").equals("postgresql")) {
+        if (System.getenv("DATABASE_URL")!=null && System.getenv("DATABASE_URL").startsWith("postgres")) {
             vendorAdapter.setDatabase(Database.POSTGRESQL);
             vendorAdapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
             vendorAdapter.setGenerateDdl(true);
