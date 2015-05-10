@@ -1,13 +1,15 @@
 package cat.udl.eps.softarch.hello.model;
 
-import java.util.Date;
-
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -24,6 +26,7 @@ public class Greeting {
     private String content;
 
     @Email(message = "Invalid E-Mail")
+    @NotBlank(message = "Invalid E-Mail")
     private String email;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

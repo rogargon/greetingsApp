@@ -1,16 +1,18 @@
 package cat.udl.eps.softarch.hello.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.*;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by http://rhizomik.net/~roberto/
  */
 @Entity
+@Table(name = "GreetingsUser") //Avoid collision with system table User in Postgres
 public class User {
     @Id
     @NotBlank(message = "Username cannot be blank")
