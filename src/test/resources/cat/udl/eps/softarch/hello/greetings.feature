@@ -27,23 +27,35 @@ Feature: GreetingsAPI
     And error url is "/greetings/999"
 
   Scenario: create new greeting
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     When the client creates a greeting with content "Bye bye!", email "test@example.org" and date "11/30/2014"
     Then the response is status code 201
     And header "Location" points to a greeting with content "Bye bye!"
 
   Scenario: create new greeting with empty content
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     When the client creates a greeting with content "", email "test@example.org" and date "11/30/2014"
     Then the response is status code 400
     And error message contains "Content cannot be blank"
     And error url is "/greetings"
 
   Scenario: create new greeting with content longer than 256 characters
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     When the client creates a greeting with content "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tincidunt, dui sed efficitur pellentesque, lorem velit varius ligula, id malesuada felis purus vitae tellus. Donec at vestibulum purus, eget hendrerit nisl. Duis aliquam leo ac magna mollis malesuada.", email "test@example.org" and date "11/30/2014"
     Then the response is status code 400
     And error message contains "Content maximum length is 256 characters long"
     And error url is "/greetings"
 
   Scenario: update existing greeting
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     Given the greetings repository has the following greetings:
       | content      | email             | date       |
       | Hello World! | test1@example.org | 11/30/2014 |
@@ -53,6 +65,9 @@ Feature: GreetingsAPI
     And the response is a greeting with id 1 and content "Just hello!"
 
   Scenario: update non-existing greeting
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     Given the greetings repository has the following greetings:
       | content      | email             | date       |
       | Hello World! | test1@example.org | 11/30/2014 |
@@ -63,6 +78,9 @@ Feature: GreetingsAPI
     And error url is "/greetings/999"
 
   Scenario: update existing greeting with empty content
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     Given the greetings repository has the following greetings:
       | content      | email             | date       |
       | Hello World! | test1@example.org | 11/30/2014 |
@@ -73,12 +91,18 @@ Feature: GreetingsAPI
     And error url is "/greetings/1"
 
   Scenario: update existing greeting with content longer than 256 characters
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     When the client updates greeting with id 1 with content "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tincidunt, dui sed efficitur pellentesque, lorem velit varius ligula, id malesuada felis purus vitae tellus. Donec at vestibulum purus, eget hendrerit nisl. Duis aliquam leo ac magna mollis malesuada.", email "test@example.org" and date "11/30/2014"
     Then the response is status code 400
     And error message contains "Content maximum length is 256 characters long"
     And error url is "/greetings/1"
 
   Scenario: delete existing greeting
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     Given the greetings repository has the following greetings:
       | content      | email             | date       |
       | Hello World! | test1@example.org | 11/30/2014 |
@@ -88,6 +112,9 @@ Feature: GreetingsAPI
     And the response is empty
 
   Scenario: delete non-existing greeting
+    Given the users repository has the following users:
+      | username      | password    | email            |
+      | testuser      | pass        | test@example.org |
     Given the greetings repository has the following greetings:
       | content      | email             | date       |
       | Hello World! | test1@example.org | 11/30/2014 |

@@ -2,7 +2,9 @@ package cat.udl.eps.softarch.hello;
 
 import cat.udl.eps.softarch.hello.config.ApplicationConfig;
 import cat.udl.eps.softarch.hello.model.Greeting;
+import cat.udl.eps.softarch.hello.model.User;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
+import cat.udl.eps.softarch.hello.repository.UserRepository;
 import cucumber.api.DataTable;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -12,6 +14,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +28,8 @@ import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertFalse;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,6 +45,8 @@ public class GreetingsStepdefs {
 
     @Autowired
     GreetingRepository greetingRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext wac;
@@ -49,7 +56,10 @@ public class GreetingsStepdefs {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
     }
 
     @After
@@ -68,6 +78,14 @@ public class GreetingsStepdefs {
                 greetingRepository.save(toBeUpdated);
             }
             index++;
+        }
+    }
+
+    @Given("^the users repository has the following users:$")
+    public void the_users_repository_has_the_following_users(DataTable users) throws Throwable {
+        for (User u : users.asList(User.class)) {
+            if (!userRepository.exists(u.getUsername()))
+                userRepository.save(u);
         }
     }
 
@@ -127,10 +145,12 @@ public class GreetingsStepdefs {
     public void the_client_creates_a_greeting_with_content_email_and_date(String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(post("/greetings")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{ \"content\": \"" + content + "\""+
-                                     ", \"email\": \"" + email + "\""+
-                                     ", \"date\": \"" + df.format(date) + "\" }")
-                            .accept(MediaType.APPLICATION_JSON));
+                            .content("{ \"content\": \"" + content + "\"" +
+                                    ", \"email\": \"" + email + "\"" +
+                                    ", \"date\": \"" + df.format(date) + "\" }")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .with(httpBasic("testuser", "pass"))
+                            .with(csrf()));
     }
 
     @And("^header \"([^\"]*)\" points to a greeting with content \"([^\"]*)\"$")
@@ -147,17 +167,21 @@ public class GreetingsStepdefs {
     public void the_client_updates_greeting_with_id_with_content_email_and_date(int id, String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(put("/greetings/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"content\": \"" + content + "\""+
-                         ", \"email\": \"" + email + "\""+
-                         ", \"date\": \"" + df.format(date) + "\" }")
-                .accept(MediaType.APPLICATION_JSON));
+                .content("{ \"content\": \"" + content + "\"" +
+                        ", \"email\": \"" + email + "\"" +
+                        ", \"date\": \"" + df.format(date) + "\" }")
+                .accept(MediaType.APPLICATION_JSON)
+                .with(httpBasic("testuser", "pass"))
+                .with(csrf()));
     }
 
     @When("^the client deletes greeting with id (\\d+)$")
     public void the_client_deletes_greeting_with_id(int id) throws Throwable {
         result = mockMvc.perform(delete("/greetings/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .accept(MediaType.APPLICATION_JSON));
+                            .accept(MediaType.APPLICATION_JSON)
+                .with(httpBasic("testuser", "pass"))
+                .with(csrf()));
     }
 
     @And("^the response is empty$")
