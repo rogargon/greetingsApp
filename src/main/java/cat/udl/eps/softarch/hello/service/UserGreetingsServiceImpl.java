@@ -36,11 +36,12 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
         User u = userRepository.findUserByEmail(g.getEmail());
         if (u == null) {
             String username = g.getEmail().substring(0,g.getEmail().indexOf('@'));
-            u = new User(username, g.getEmail());
+            u = new User(username, g.getEmail(), "pass");
         }
-        greetingRepository.save(g);
+        g.setAuthor(u);
         u.addGreeting(g);
         userRepository.save(u);
+        greetingRepository.save(g);
         return g;
     }
 

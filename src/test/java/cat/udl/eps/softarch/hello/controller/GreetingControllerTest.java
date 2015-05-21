@@ -57,7 +57,7 @@ public class GreetingControllerTest {
         if (greetingRepository.count() == 0) {
             Greeting g = new Greeting("test1", "test@example.org", greetingDate);
             greetingRepository.save(g);
-            User u = new User("testuser", "test@example.org");
+            User u = new User("testuser", "test@example.org", "pass");
             u.addGreeting(g);
             userRepository.save(u);
         }
