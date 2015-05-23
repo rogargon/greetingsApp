@@ -3,7 +3,7 @@
  */
 
 (function(){
-    var app = angular.module("greetingsJS", ["greetingTab","greetingForm"]);
+    var app = angular.module("greetingsJS", ["greetingTab","greetingForm","loginForm"]);
 
     app.controller("GreetingsController", ["$http",
         function($http) {
