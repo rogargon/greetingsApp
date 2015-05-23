@@ -1,5 +1,6 @@
 package cat.udl.eps.softarch.hello.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -29,6 +30,7 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Greeting> greetings = new ArrayList<>();
 
+    @JsonIgnore
     private String password;
 
     public User() { }
@@ -46,20 +48,25 @@ public class User implements UserDetails {
     public String getPassword() { return password; }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() { return true; }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() { return true; }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() { return true; }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() { return true; }
 
     public String getEmail() { return email; }
