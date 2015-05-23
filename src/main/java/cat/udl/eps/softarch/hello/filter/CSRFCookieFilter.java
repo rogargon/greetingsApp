@@ -20,7 +20,7 @@ public class CSRFCookieFilter extends OncePerRequestFilter {
         CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrf != null) {
             Cookie cookie = new Cookie("XSRF-TOKEN", csrf.getToken());
-            cookie.setPath("/api");
+            cookie.setPath("/");
             response.addCookie(cookie);
         }
         filterChain.doFilter(request, response);
