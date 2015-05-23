@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().and()
                 .authorizeRequests()
                     .antMatchers("/api/*/form").authenticated()
+                    .antMatchers("/api/users/**").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                     .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
                     .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
