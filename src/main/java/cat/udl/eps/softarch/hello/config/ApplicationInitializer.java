@@ -1,6 +1,5 @@
 package cat.udl.eps.softarch.hello.config;
 
-import cat.udl.eps.softarch.hello.filter.SimpleCORSFilter;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -29,8 +28,8 @@ public class ApplicationInitializer implements WebApplicationInitializer {
         FilterRegistration.Dynamic security = servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy());
         security.addMappingForUrlPatterns(dispatcherTypes, true, "/api/*");
 
-        FilterRegistration.Dynamic cors = servletContext.addFilter("simpleCORSFilter", new SimpleCORSFilter());
-        cors.addMappingForUrlPatterns(dispatcherTypes, true, "/api/*");
+        //FilterRegistration.Dynamic cors = servletContext.addFilter("simpleCORSFilter", new SimpleCORSFilter());
+        //cors.addMappingForUrlPatterns(dispatcherTypes, true, "/api/*");
 
         FilterRegistration.Dynamic httpMethods = servletContext.addFilter("hiddenHttpMethodFilter", new HiddenHttpMethodFilter());
         httpMethods.addMappingForUrlPatterns(dispatcherTypes, true, "/api/*");

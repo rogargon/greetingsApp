@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.hello.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
@@ -20,8 +21,9 @@ import org.springframework.social.twitter.connect.TwitterConnectionFactory;
  */
 @Configuration
 @EnableSocial
+@PropertySource("classpath:application.properties")
 public class SocialConfig implements SocialConfigurer {
-
+    
     @Override
     public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
         cfConfig.addConnectionFactory(

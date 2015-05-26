@@ -62,9 +62,9 @@ public class GreetingControllerTest {
         this.greetingDate = df.parse("2015-01-01");
 
         if (greetingRepository.count() == 0) {
-            Greeting g = new Greeting("test1", "test@example.org", greetingDate);
+            User u = new User("testuser");
+            Greeting g = new Greeting("test1", u, greetingDate);
             greetingRepository.save(g);
-            User u = new User("testuser", "pass", "test@example.org");
             u.addGreeting(g);
             userRepository.save(u);
         }
@@ -166,7 +166,8 @@ public class GreetingControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "test@example.org", new Date()));
+        User u = userRepository.findOne("testuser");
+        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", u, new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
@@ -186,7 +187,8 @@ public class GreetingControllerTest {
 
     @Test
     public void testUpdateEmpty() throws Exception {
-        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", "test@example.org", new Date()));
+        User u = userRepository.findOne("testuser");
+        Greeting tobeupdated = greetingRepository.save(new Greeting("tobeupdated", u, new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(put("/greetings/{id}", tobeupdated.getId())
@@ -242,7 +244,8 @@ public class GreetingControllerTest {
 
     @Test
     public void testDeleteExisting() throws Exception {
-        Greeting toBeRemoved = greetingRepository.save(new Greeting("toberemoved", "test@example.org", new Date()));
+        User u = userRepository.findOne("testuser");
+        Greeting toBeRemoved = greetingRepository.save(new Greeting("toberemoved", u, new Date()));
         int startSize = Ints.checkedCast(greetingRepository.count());
 
         mockMvc.perform(delete("/greetings/{id}", toBeRemoved.getId())

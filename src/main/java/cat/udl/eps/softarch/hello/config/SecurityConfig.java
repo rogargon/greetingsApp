@@ -1,6 +1,5 @@
 package cat.udl.eps.softarch.hello.config;
 
-import cat.udl.eps.softarch.hello.filter.CSRFCookieFilter;
 import cat.udl.eps.softarch.hello.repository.UserRepository;
 import cat.udl.eps.softarch.hello.service.RepositoryUserDetailsService;
 import cat.udl.eps.softarch.hello.service.SimpleSocialUserDetailsService;
@@ -14,7 +13,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.social.security.SocialUserDetailsService;
@@ -36,51 +36,54 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
-                .loginPage("/api/login")
-                .loginProcessingUrl("/api/login/authenticate")
-                .failureUrl("/api/login?error=bad_credentials")
-                .and()
-                .logout()
-                .deleteCookies("JSESSIONID")
-                .logoutUrl("/api/logout")
-                .logoutSuccessUrl("/api/login")
-                .and()
+                .loginPage("/api/login").and()
                 .authorizeRequests()
-                    .antMatchers("/api/*/form").authenticated()
-                    .antMatchers("/api/users/**").authenticated()
+                    .antMatchers(
+                        "/api/*/form",
+                        "/api/users/**").authenticated()
+                    .antMatchers(
+                        "/api/connect/**",
+                        "/api/login",
+                        "/api/signup/**",
+                        "/api/greetings/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/**").authenticated()
                     .antMatchers(HttpMethod.PUT, "/api/**").authenticated()
-                    .antMatchers(HttpMethod.DELETE, "/api/**").authenticated()
-                    .antMatchers(
-                            "/api/auth/**",
-                            "/api/login",
-                            "/api/signup/**",
-                            "/api/users/register/**",
-                            "/api/greetings/**").permitAll()
-                .and()
-                .rememberMe()
-                .and()
-                .apply(new SpringSocialConfigurer()).and()
-                .addFilterAfter(new CSRFCookieFilter(), CsrfFilter.class)
-                .csrf().csrfTokenRepository(csrfTokenRepository());
+                    .antMatchers(HttpMethod.DELETE, "/api/**").authenticated().and()
+                .apply(new SpringSocialConfigurer());
+
+        http.csrf().disable();
+                //.and()
+                //.addFilterAfter(new CSRFCookieFilter(), CsrfFilter.class)
+                //.csrf().csrfTokenRepository(csrfTokenRepository());
     }
 
     @Autowired
     private UserRepository userRepository;
 
     @Bean
+    public SocialUserDetailsService socialUserDetailsService() {
+        return new SimpleSocialUserDetailsService(userDetailsService());
+    }
+
+    @Bean
     public UserDetailsService userDetailsService() {
         return new RepositoryUserDetailsService(userRepository);
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService())
+                .passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
 
     private CsrfTokenRepository csrfTokenRepository() {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-XSRF-TOKEN");
         return repository;
-    }
-
-    @Bean
-    public SocialUserDetailsService socialUserDetailsService() {
-        return new SimpleSocialUserDetailsService(userDetailsService());
     }
 }

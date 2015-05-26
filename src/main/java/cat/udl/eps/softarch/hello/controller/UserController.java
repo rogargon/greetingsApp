@@ -8,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -46,8 +47,8 @@ public class UserController {
     // RETRIEVE LOGGED USER
     @RequestMapping("/current")
     @ResponseBody
-    public User user(@AuthenticationPrincipal User user) {
-        logger.info("Retrieving current logged in user {}", user.getUsername());
-        return userGreetingsService.getUserAndGreetings(user.getUsername());
+    public User user(Principal user) {
+        logger.info("Retrieving current logged in user {}", user.getName());
+        return userGreetingsService.getUserAndGreetings(user.getName());
     }
 }

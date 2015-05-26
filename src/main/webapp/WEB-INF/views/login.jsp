@@ -8,22 +8,18 @@
     <title>GreetingsApp Login</title>
 </head>
 <body>
-<div class="page-header">
+
     <h1>GreetingsApp Login</h1>
-</div>
 
-<sec:authorize access="isAnonymous()">
-    <!-- Social Sign In Buttons -->
-    <p>
-        <a href="${pageContext.request.contextPath}/auth/twitter">
-            <img src="https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-gray.png"/>
-        </a>
-    </p>
-</sec:authorize>
+    <sec:authorize access="isAnonymous()">
+    <form action="<c:url value="/api/connect/twitter"/>" method="POST">
+        <p><input type="submit" value="Connect with Twitter"/></p>
+    </form>
+    </sec:authorize>
 
-<sec:authorize access="isAuthenticated()">
+    <sec:authorize access="isAuthenticated()">
     <p>User already authenticated</p>
-</sec:authorize>
+    </sec:authorize>
 
 </body>
 </html>

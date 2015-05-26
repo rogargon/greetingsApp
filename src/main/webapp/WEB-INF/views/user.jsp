@@ -14,12 +14,14 @@
     <c:if test="${not empty user.getImageUrl()}">
         <img src="${user.getImageUrl()}"/>
     </c:if>
+
+    <h3>User Greetings</h3>
     <c:if test="${not empty user.getGreetings()}">
-        <h3>User Greetings</h3>
         <c:forEach var="greeting" items="${user.getGreetings()}">
             <li><a href="/api/greetings/${greeting.getId()}">${greeting.getId()}</a>: ${fn:escapeXml(greeting.getContent())}</li>
         </c:forEach>
     </c:if>
+    <p><a href="/api/greetings/form">Add</a></p>
 </c:if>
 
 </body>

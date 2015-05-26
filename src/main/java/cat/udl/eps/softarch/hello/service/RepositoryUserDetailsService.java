@@ -16,9 +16,10 @@ public class RepositoryUserDetailsService implements UserDetailsService {
 
     @Autowired
     public RepositoryUserDetailsService(UserRepository repository) {
+        //this.repository = repository;
+        //User u = new User("user", "pass", "user@test.org");
+        //this.repository.save(u);
         this.repository = repository;
-        User u = new User("user", "pass", "user@test.org");
-        this.repository.save(u);
     }
 
     @Override

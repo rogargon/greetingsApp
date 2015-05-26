@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isErrorPage="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <html>
 <head>
     <title>Greeting Form</title>
@@ -24,11 +25,11 @@
     <table>
         <tr>
             <td><form:label path="content">Content</form:label></td>
-            <td><form:input path="content"/> <i><form:errors path="content"></form:errors></i></td>
+            <td><form:input path="content"/> <i><form:errors path="content"/></i></td>
         </tr>
         <tr>
-            <td><form:label path="email">E-Mail</form:label></td>
-            <td><form:input path="email" readonly="true"/> <i><form:errors path="email"></form:errors></i></td>
+            <td><form:label path="author">Author</form:label></td>
+            <td><form:input path="author" readonly="true"/> <i><form:errors path="author.username"/></i></td>
         </tr>
         <tr>
             <td><form:hidden path="date"/> <i><form:errors path="date"></form:errors></i></td>

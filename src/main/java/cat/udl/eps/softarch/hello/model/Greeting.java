@@ -1,7 +1,6 @@
 package cat.udl.eps.softarch.hello.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,10 +22,6 @@ public class Greeting {
     @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String content;
 
-    @Email(message = "Invalid E-Mail")
-    @NotBlank(message = "Invalid E-Mail")
-    private String email;
-
     @ManyToOne
     @JsonBackReference
     private User author;
@@ -36,16 +31,9 @@ public class Greeting {
 
     public Greeting() {}
 
-    public Greeting(String content, String email, User author, Date date) {
+    public Greeting(String content, User author, Date date) {
         this.content = content;
-        this.email = email;
         this.author = author;
-        this.date = date;
-    }
-
-    public Greeting(String content, String email, Date date) {
-        this.content = content;
-        this.email = email;
         this.date = date;
     }
 
@@ -54,10 +42,6 @@ public class Greeting {
     public String getContent() { return content; }
 
     public void setContent(String content) { this.content = content; }
-
-    public String getEmail() { return email; }
-
-    public void setEmail(String email) { this.email = email; }
 
     public User getAuthor() { return author; }
 

@@ -20,6 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "GreetingsUser") //Avoid collision with system table User in Postgres
 public class User implements UserDetails{
+
     @Id
     @NotBlank(message = "Username cannot be blank")
     private String username;
@@ -31,25 +32,20 @@ public class User implements UserDetails{
     @JsonManagedReference
     private List<Greeting> greetings = new ArrayList<>();
 
-    @JsonIgnore
-    private String password;
-
     @URL
     private String imageUrl;
 
     public User() {}
 
-    public User(String username, String password, String email) {
+    public User(String username) {
         this.username = username;
-        this.password = password;
-        this.email = email;
     }
 
     @Override
     public String getUsername() { return username; }
 
     @Override
-    public String getPassword() { return password; }
+    public String getPassword() { return null; } // No password, Twitter authentication
 
     public String getEmail() { return email; }
 
@@ -92,4 +88,7 @@ public class User implements UserDetails{
     @Override
     @JsonIgnore
     public boolean isEnabled() { return true; }
+
+    @Override
+    public String toString() { return getUsername(); }
 }

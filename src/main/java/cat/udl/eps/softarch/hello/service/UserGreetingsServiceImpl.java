@@ -33,12 +33,8 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
     @Transactional
     @Override
     public Greeting addGreetingToUser(Greeting g) {
-        User u = userRepository.findOne(g.getEmail());
-        if (u == null) {
-            String username = g.getEmail().substring(0,g.getEmail().indexOf('@'));
-            u = new User(username, "pass", g.getEmail());
-        }
-        g.setAuthor(u);
+        User u = userRepository.findOne(g.getAuthor().getUsername());
+        logger.info("Adding greeting with content '{}' to user {}", g.getContent(), u.getUsername());
         u.addGreeting(g);
         userRepository.save(u);
         greetingRepository.save(g);
@@ -51,8 +47,8 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
         Greeting oldGreeting = greetingRepository.findOne(greetingId);
         oldGreeting.setContent(updateGreeting.getContent());
         oldGreeting.setDate(updateGreeting.getDate());
-        if (!updateGreeting.getEmail().equals(oldGreeting.getEmail())) {
-            throw new GreetingUsernameUpdateException("Greeting e-mail cannot be updated");
+        if (!updateGreeting.getAuthor().getUsername().equals(oldGreeting.getAuthor().getUsername())) {
+            throw new GreetingUsernameUpdateException("Greeting author cannot be changed");
         }
         return greetingRepository.save(oldGreeting);
     }
@@ -61,7 +57,7 @@ public class UserGreetingsServiceImpl implements UserGreetingsService {
     @Override
     public void removeGreetingFromUser(Long greetingId) {
         Greeting g = greetingRepository.findOne(greetingId);
-        User u = userRepository.findOne(g.getEmail());
+        User u = g.getAuthor();
         if (u != null) {
             u.removeGreeting(g);
             userRepository.save(u);
