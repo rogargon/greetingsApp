@@ -14,7 +14,6 @@ import org.springframework.social.twitter.api.Twitter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -35,7 +34,7 @@ public class SignupController {
     public String login() { return "login"; }
 
     @RequestMapping(value="/signup", method=RequestMethod.GET)
-    public String signup(WebRequest request) {
+    public String signup() {
         Connection<Twitter> twitter = connectionRepository.getPrimaryConnection(Twitter.class);
         if (twitter != null) {
             User user;
@@ -49,8 +48,6 @@ public class SignupController {
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            //ProviderSignInUtils providerSignInUtils = new ProviderSignInUtils(connectionFactoryLocator, usersConnectionRepository);
-            //providerSignInUtils.doPostSignUp(user.getUsername(), request);
             return "redirect:/api/users/"+twitter.getDisplayName();
         }
         return null;
