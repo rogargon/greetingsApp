@@ -1,0 +1,15 @@
+<h3>Greeting: {{greeting.message | limitTo:10}}...</h3>
+<section class="tab">
+    <ul class="nav nav-tabs">
+        <li ng-class="{active: tab.isSet(1)}">
+            <a href ng-click="tab.setTab(1)">Content</a></li>
+        <li ng-class="{active: tab.isSet(2)}">
+            <a href ng-click="tab.setTab(2)">Author</a></li>
+    </ul>
+    <div class="tab-message" ng-show="tab.isSet(1)">
+        <blockquote>{{greeting.message}}</blockquote>
+    </div>
+    <div class="tab-message" ng-show="tab.isSet(2)">
+        <blockquote>{{greeting.email}} on {{greeting.date | date}}</blockquote>
+    </div>
+</section>

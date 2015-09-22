@@ -16,7 +16,7 @@ public class GreetingTest {
 
     @Test
     public void testSetContent() throws Exception {
-        greeting.setContent("test");
-        assertEquals("test", greeting.getContent());
+        greeting.setMessage("test");
+        assertEquals("test", greeting.getMessage());
     }
 }

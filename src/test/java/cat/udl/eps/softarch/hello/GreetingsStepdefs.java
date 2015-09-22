@@ -23,7 +23,11 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+<<<<<<< Updated upstream
 import static org.junit.Assert.*;
+=======
+import static org.junit.Assert.assertFalse;
+>>>>>>> Stashed changes
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,7 +52,13 @@ public class GreetingsStepdefs {
 
     @Before
     public void setup() {
+<<<<<<< Updated upstream
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+=======
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
+                .build();
+>>>>>>> Stashed changes
     }
 
     @After
@@ -56,14 +66,14 @@ public class GreetingsStepdefs {
     }
 
     @Given("^the greetings repository has the following greetings:$")
-    public void the_greetings_repository_has_the_following_greetings(DataTable greetings) throws Throwable {
+    public void the_greetings_repository_has_the_following_greetings(List<Greeting> greetings) throws Throwable {
         Long index = 1L;
-        for (Greeting g : greetings.asList(Greeting.class)) {
+        for (Greeting g: greetings) {
             if (!greetingRepository.exists(index))
                 greetingRepository.save(g);
-            else if (!greetingRepository.findOne(index).getContent().equals(g.getContent())) {
+            else if (!greetingRepository.findOne(index).getMessage().equals(g.getMessage())) {
                 Greeting toBeUpdated = greetingRepository.findOne(index);
-                toBeUpdated.setContent(g.getContent());
+                toBeUpdated.setMessage(g.getMessage());
                 greetingRepository.save(toBeUpdated);
             }
             index++;
@@ -126,9 +136,15 @@ public class GreetingsStepdefs {
     public void the_client_creates_a_greeting_with_content_email_and_date(String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(post("/greetings")
                             .contentType(MediaType.APPLICATION_JSON)
+<<<<<<< Updated upstream
                             .content("{ \"content\": \"" + content + "\""+
                                      ", \"email\": \"" + email + "\""+
                                      ", \"date\": \"" + df.format(date) + "\" }")
+=======
+                            .content("{ \"content\": \"" + content + "\"" +
+                                    ", \"email\": \"" + email + "\"" +
+                                    ", \"date\": \"" + df.format(date) + "\" }")
+>>>>>>> Stashed changes
                             .accept(MediaType.APPLICATION_JSON));
     }
 
@@ -146,9 +162,15 @@ public class GreetingsStepdefs {
     public void the_client_updates_greeting_with_id_with_content_email_and_date(int id, String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(put("/greetings/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
+<<<<<<< Updated upstream
                 .content("{ \"content\": \"" + content + "\""+
                          ", \"email\": \"" + email + "\""+
                          ", \"date\": \"" + df.format(date) + "\" }")
+=======
+                .content("{ \"content\": \"" + content + "\"" +
+                        ", \"email\": \"" + email + "\"" +
+                        ", \"date\": \"" + df.format(date) + "\" }")
+>>>>>>> Stashed changes
                 .accept(MediaType.APPLICATION_JSON));
     }
 

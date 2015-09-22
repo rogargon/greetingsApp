@@ -23,7 +23,7 @@ public class Greeting {
 
     @NotBlank(message = "Content cannot be blank")
     @Size(max = 256, message = "Content maximum length is {max} characters long")
-    private String content;
+    private String message;
 
     @NotBlank(message = "E-mail cannot be blank")
     @Email(message = "E-mail should be valid")
@@ -34,17 +34,29 @@ public class Greeting {
 
     public Greeting() {}
 
+<<<<<<< Updated upstream
     public Greeting(String content, String email, Date date) {
         this.content = content;
+=======
+    public Greeting(String message, String email, User author, Date date) {
+        this.message = message;
+        this.email = email;
+        this.author = author;
+        this.date = date;
+    }
+
+    public Greeting(String message, String email, Date date) {
+        this.message = message;
+>>>>>>> Stashed changes
         this.email = email;
         this.date = date;
     }
 
     public long getId() { return id; }
 
-    public String getContent() { return content; }
+    public String getMessage() { return message; }
 
-    public void setContent(String content) { this.content = content; }
+    public void setMessage(String message) { this.message = message; }
 
     public String getEmail() { return email; }
 
