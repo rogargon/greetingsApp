@@ -1,7 +1,8 @@
-package cat.udl.eps.softarch.hello.repository;
+package cat.udl.eps.softarch.hello.handler;
 
 import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.model.User;
+import cat.udl.eps.softarch.hello.repository.UserRepository;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@RepositoryEventHandler
+@RepositoryEventHandler(Greeting.class)
 public class GreetingEventHandler {
     @Autowired
     UserRepository userRepository;

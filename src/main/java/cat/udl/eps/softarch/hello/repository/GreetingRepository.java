@@ -4,21 +4,14 @@ import cat.udl.eps.softarch.hello.model.Greeting;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-<<<<<<< Updated upstream
-=======
 
 import java.util.List;
->>>>>>> Stashed changes
 
 /**
  * Created by http://rhizomik.net/~roberto/
  */
 
-<<<<<<< Updated upstream
-@RepositoryRestResource(collectionResourceRel = "greetings", path = "greetings")
-=======
 @RepositoryRestResource
->>>>>>> Stashed changes
 public interface GreetingRepository extends PagingAndSortingRepository<Greeting, Long> {
 
     // PagingAndSortingRepository provides:

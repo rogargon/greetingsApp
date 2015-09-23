@@ -1,15 +1,13 @@
 package cat.udl.eps.softarch.hello.model;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 /**
  * Created by http://rhizomik.net/~roberto/
@@ -25,19 +23,19 @@ public class Greeting {
     @Size(max = 256, message = "Content maximum length is {max} characters long")
     private String message;
 
-    @NotBlank(message = "E-mail cannot be blank")
-    @Email(message = "E-mail should be valid")
+    @Email(message = "Invalid E-Mail")
+    @NotBlank(message = "Invalid E-Mail")
     private String email;
 
-    @NotNull
+    @ManyToOne
+    @JsonBackReference
+    private User author;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date date;
 
     public Greeting() {}
 
-<<<<<<< Updated upstream
-    public Greeting(String content, String email, Date date) {
-        this.content = content;
-=======
     public Greeting(String message, String email, User author, Date date) {
         this.message = message;
         this.email = email;
@@ -47,7 +45,6 @@ public class Greeting {
 
     public Greeting(String message, String email, Date date) {
         this.message = message;
->>>>>>> Stashed changes
         this.email = email;
         this.date = date;
     }
@@ -61,6 +58,10 @@ public class Greeting {
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
+
+    public User getAuthor() { return author; }
+
+    public void setAuthor(User author) { this.author = author; }
 
     public Date getDate() { return date; }
 

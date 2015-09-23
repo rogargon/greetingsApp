@@ -1,13 +1,17 @@
 package cat.udl.eps.softarch.hello;
 
-import cat.udl.eps.softarch.hello.config.GreetingsAppTestContext;
+import cat.udl.eps.softarch.hello.config.ApplicationConfig;
 import cat.udl.eps.softarch.hello.model.Greeting;
+import cat.udl.eps.softarch.hello.model.User;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
+import cat.udl.eps.softarch.hello.repository.UserRepository;
 import cucumber.api.DataTable;
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import cucumber.api.java.en.*;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,11 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-<<<<<<< Updated upstream
-import static org.junit.Assert.*;
-=======
 import static org.junit.Assert.assertFalse;
->>>>>>> Stashed changes
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,13 +36,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @WebAppConfiguration
-@ContextConfiguration(classes = GreetingsAppTestContext.class)
+@ContextConfiguration(classes = ApplicationConfig.class)
 public class GreetingsStepdefs {
 
     static DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     GreetingRepository greetingRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext wac;
@@ -52,13 +54,9 @@ public class GreetingsStepdefs {
 
     @Before
     public void setup() {
-<<<<<<< Updated upstream
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-=======
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(this.wac)
                 .build();
->>>>>>> Stashed changes
     }
 
     @After
@@ -80,6 +78,14 @@ public class GreetingsStepdefs {
         }
     }
 
+    @Given("^the users repository has the following users:$")
+    public void the_users_repository_has_the_following_users(DataTable users) throws Throwable {
+        for (User u : users.asList(User.class)) {
+            if (!userRepository.exists(u.getUsername()))
+                userRepository.save(u);
+        }
+    }
+
     @When("^the client request the list of greetings$")
     public void the_client_request_the_list_of_greetings() throws Throwable {
         result = mockMvc.perform(get("/greetings")
@@ -90,12 +96,12 @@ public class GreetingsStepdefs {
     public void the_response_is_a_list_containing_greetings(int lenght) throws Throwable {
         result.andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(lenght)));
+                .andExpect(jsonPath("$._embedded.greetings", hasSize(lenght)));
     }
 
     @And("^one greeting has id (\\d+) and content \"([^\"]*)\"$")
     public void one_greeting_has_id_and_content(int id, String content) throws Throwable {
-        result.andExpect(jsonPath("$[?(@.id =='"+id+"')].content").value(hasItem(content)));
+        result.andExpect(jsonPath("$._embedded.greetings[?(@._links.self.href=='http://localhost/greetings/"+id+"')].message").value(hasItem(content)));
     }
 
     @When("^the client requests greeting with id (\\d+)$")
@@ -108,8 +114,8 @@ public class GreetingsStepdefs {
     public void the_response_is_a_greeting_with_id_and_content(int id, String content) throws Throwable {
         result.andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", is(id)))
-                .andExpect(jsonPath("$.content", is(content)));
+                .andExpect(jsonPath("$._links.self.href").value(is("http://localhost/greetings/"+id)))
+                .andExpect(jsonPath("$.message").value(is(content)));
     }
 
     @Given("^greeting with id (\\d+) doesn't exist$")
@@ -136,22 +142,16 @@ public class GreetingsStepdefs {
     public void the_client_creates_a_greeting_with_content_email_and_date(String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(post("/greetings")
                             .contentType(MediaType.APPLICATION_JSON)
-<<<<<<< Updated upstream
-                            .content("{ \"content\": \"" + content + "\""+
-                                     ", \"email\": \"" + email + "\""+
-                                     ", \"date\": \"" + df.format(date) + "\" }")
-=======
                             .content("{ \"content\": \"" + content + "\"" +
                                     ", \"email\": \"" + email + "\"" +
                                     ", \"date\": \"" + df.format(date) + "\" }")
->>>>>>> Stashed changes
                             .accept(MediaType.APPLICATION_JSON));
     }
 
     @And("^header \"([^\"]*)\" points to a greeting with content \"([^\"]*)\"$")
     public void header_points_to_a_greeting_with_content(String header, String content) throws Throwable {
         String location = result.andReturn().getResponse().getHeader(header);
-        result = mockMvc.perform(get(location)
+        result = mockMvc.perform(get("/"+location)
                             .accept(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -162,15 +162,9 @@ public class GreetingsStepdefs {
     public void the_client_updates_greeting_with_id_with_content_email_and_date(int id, String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(put("/greetings/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-<<<<<<< Updated upstream
-                .content("{ \"content\": \"" + content + "\""+
-                         ", \"email\": \"" + email + "\""+
-                         ", \"date\": \"" + df.format(date) + "\" }")
-=======
                 .content("{ \"content\": \"" + content + "\"" +
                         ", \"email\": \"" + email + "\"" +
                         ", \"date\": \"" + df.format(date) + "\" }")
->>>>>>> Stashed changes
                 .accept(MediaType.APPLICATION_JSON));
     }
 
