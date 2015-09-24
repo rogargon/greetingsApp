@@ -14,6 +14,8 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebAppConfiguration
 @ContextConfiguration(classes = ApplicationConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class GreetingsStepdefs {
 
     static DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -130,19 +133,14 @@ public class GreetingsStepdefs {
 
     @And("^error message contains \"([^\"]*)\"$")
     public void error_message_contains(String errorMessage) throws Throwable {
-        result.andExpect(jsonPath("$.errorInfo.message", containsString(errorMessage)));
-    }
-
-    @And("^error url is \"([^\"]*)\"$")
-    public void error_url_is(String errorURL) throws Throwable {
-        result.andExpect(jsonPath("$.errorInfo.url", is(errorURL)));
+        result.andExpect(jsonPath("$.message", containsString(errorMessage)));
     }
 
     @When("^the client creates a greeting with content \"([^\"]*)\", email \"([^\"]*)\" and date \"([^\"]*)\"$")
     public void the_client_creates_a_greeting_with_content_email_and_date(String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(post("/greetings")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content("{ \"content\": \"" + content + "\"" +
+                            .content("{ \"message\": \"" + content + "\"" +
                                     ", \"email\": \"" + email + "\"" +
                                     ", \"date\": \"" + df.format(date) + "\" }")
                             .accept(MediaType.APPLICATION_JSON));
@@ -151,18 +149,18 @@ public class GreetingsStepdefs {
     @And("^header \"([^\"]*)\" points to a greeting with content \"([^\"]*)\"$")
     public void header_points_to_a_greeting_with_content(String header, String content) throws Throwable {
         String location = result.andReturn().getResponse().getHeader(header);
-        result = mockMvc.perform(get("/"+location)
+        result = mockMvc.perform(get(location)
                             .accept(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content", is(content)));
+                .andExpect(jsonPath("$.message", is(content)));
     }
 
     @When("^the client updates greeting with id (\\d+) with content \"([^\"]*)\", email \"([^\"]*)\" and date \"([^\"]*)\"$")
     public void the_client_updates_greeting_with_id_with_content_email_and_date(int id, String content, String email, Date date) throws Throwable {
         result = mockMvc.perform(put("/greetings/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"content\": \"" + content + "\"" +
+                .content("{ \"message\": \"" + content + "\"" +
                         ", \"email\": \"" + email + "\"" +
                         ", \"date\": \"" + df.format(date) + "\" }")
                 .accept(MediaType.APPLICATION_JSON));
