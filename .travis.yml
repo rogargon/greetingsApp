@@ -1,5 +1,15 @@
 language: java
+branches:
+  only:
+  - spring-data-rest
 notifications:
   email: rogargon@gmail.com
   on_success: change
   on_failure: always
+deploy:
+  provider: heroku
+  api_key:
+    secure: ntetbA/pvg3Sl4ZyS6FzBBzTkH2BLBnEzBz+clvLZGZtmEDsqctxnJ+LGeGh+SnvkHIanyoP5Ixb7yHJ1DUuUCR9zzzDdYbOcFH2Vuh9K3bIGV7BbF+udFPmEMhS72U3iCBT6jLsaxfd7Bbc7pGcQaQMBE+pYK2b6N/AyjZrWgc=
+  app: greetings-app
+  on:
+    repo: rogargon/greetingsApp
