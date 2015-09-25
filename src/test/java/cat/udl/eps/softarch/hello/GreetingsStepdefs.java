@@ -5,7 +5,6 @@ import cat.udl.eps.softarch.hello.model.Greeting;
 import cat.udl.eps.softarch.hello.model.User;
 import cat.udl.eps.softarch.hello.repository.GreetingRepository;
 import cat.udl.eps.softarch.hello.repository.UserRepository;
-import cucumber.api.DataTable;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -81,9 +80,14 @@ public class GreetingsStepdefs {
         }
     }
 
+    @Given("^the greetings repository has no greetings$")
+    public void the_greetings_repository_has_no_greetings() throws Throwable {
+        greetingRepository.deleteAll();
+    }
+
     @Given("^the users repository has the following users:$")
-    public void the_users_repository_has_the_following_users(DataTable users) throws Throwable {
-        for (User u : users.asList(User.class)) {
+    public void the_users_repository_has_the_following_users(List<User> users) throws Throwable {
+        for (User u: users) {
             if (!userRepository.exists(u.getUsername()))
                 userRepository.save(u);
         }
@@ -96,10 +100,17 @@ public class GreetingsStepdefs {
     }
 
     @Then("^the response is a list containing (\\d+) greetings$")
-    public void the_response_is_a_list_containing_greetings(int lenght) throws Throwable {
+    public void the_response_is_a_list_containing_greetings(int length) throws Throwable {
         result.andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$._embedded.greetings", hasSize(lenght)));
+                .andExpect(jsonPath("$._embedded.greetings", hasSize(length)));
+    }
+
+    @Then("^the response has no greetings$")
+    public void the_response_has_no_greetings() throws Throwable {
+        result.andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").value(not(hasKey("_embedded"))));
     }
 
     @And("^one greeting has id (\\d+) and content \"([^\"]*)\"$")
