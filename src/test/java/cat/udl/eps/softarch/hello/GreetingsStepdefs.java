@@ -106,13 +106,6 @@ public class GreetingsStepdefs {
                 .andExpect(jsonPath("$._embedded.greetings", hasSize(length)));
     }
 
-    @Then("^the response has no greetings$")
-    public void the_response_has_no_greetings() throws Throwable {
-        result.andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").value(not(hasKey("_embedded"))));
-    }
-
     @And("^one greeting has id (\\d+) and content \"([^\"]*)\"$")
     public void one_greeting_has_id_and_content(int id, String content) throws Throwable {
         result.andExpect(jsonPath("$._embedded.greetings[?(@._links.self.href=='http://localhost/greetings/"+id+"')].message").value(hasItem(content)));

@@ -17,4 +17,4 @@ Feature: List Greetings
   Scenario: list empty greetings
     Given the greetings repository has no greetings
     When the client request the list of greetings
-    Then the response has no greetings
+    Then the response is a list containing 0 greetings
