@@ -23,11 +23,6 @@ public class RestConfig extends RepositoryRestMvcConfiguration {
     @Autowired
     GreetingRepository greetingRepository;
 
-    @Override
-    protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        config.setDefaultMediaType(MediaType.APPLICATION_JSON);
-    }
-
     @PostConstruct
     public void init() {
         User user = new User("tester", "tester@test.org");

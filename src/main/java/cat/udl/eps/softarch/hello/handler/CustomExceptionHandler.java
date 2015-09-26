@@ -67,7 +67,7 @@ class CustomExceptionHandler {
             return new ErrorInfo(HttpStatus.UNPROCESSABLE_ENTITY, request, (ConstraintViolationException) e.getCause().getCause());
         }
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return new ErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR, request, (Exception) e.getCause());
+        return new ErrorInfo(HttpStatus.INTERNAL_SERVER_ERROR, request, (Exception) e.getCause().getCause());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
