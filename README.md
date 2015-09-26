@@ -3,14 +3,13 @@ GreetingsApp
 
 [![Build Status](https://travis-ci.org/rogargon/greetingsApp.svg?branch=spring-data-rest)](https://travis-ci.org/rogargon/greetingsApp)
 
-This is a simple Spring demo of a Greetings application providing a RESTFul JSON API also available from an HTML user interface. It features:
+This is a simple Spring demo of a Greetings application providing a RESTFul JSON API and a AngularJS client. It features:
 
-* Spring MVC with Content Negotiation
-* Spring Data JPA/Hibernate persistence over HSQL and Heroku PostgreSQL
+* Spring Data REST
+* Spring Data JPA/Hibernate persistence with HSQL and Heroku PostgreSQL
 * Unit Testing
 * Spring Cucumber acceptance tests
-* Simple CORS Filter
-* Travis Continuous Integration
+* Travis Continuous Integration and automated deployment to Heroku
 * ...
 
 To run locally, first build WAR package:
@@ -23,4 +22,4 @@ Then run embedded Tomcat server:
 mvn exec:exec
 ```
 
-The application will be available at http://localhost:8080/greetings
+The application will be available at http://localhost:8080/api/ (Server API) and http://localhost:8080/app/ (AngularJS Client)
